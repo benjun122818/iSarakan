@@ -51,7 +51,7 @@
             <p>Dear {{ $name }},</p>
             <p>Thank you for chosing our dorm as part of your academic journey in Mariano Marcos State university.</p>
             <p>Rest assured that we will give our best services we can offer.</p>
-            <!-- to be update -->
+            <!-- to be update here-->
             <p>Dorm Details Here.</p>
         </div>
         <div class="message">
