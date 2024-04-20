@@ -1,0 +1,532 @@
+<template>
+    <div class="overflow-hidden overflow-x-auto min-w-full align-middle sm:rounded-md">
+        <div class="flex w-full">
+            <div class="card w-full bg-base-100 shadow-xl">
+                <div class="card-body text-center">
+                    <div class="flex justify-center">
+                        <form @submit="searchSubmit">
+                            <ul class="menu xl:menu-horizontal lg:min-w-max rounded-box shadow-xl">
+                                <li>
+                                    <div class="form-control">
+                                        <!--  -->
+                                        <label class="input-group input-group-sm">
+                                            <span>Preferred Location</span>
+                                            <!-- Vue SearchStart-->
+                                            <input type="text" id="firstinput" placeholder="Where to?"
+                                                class="px-5 py-3 w-full border border-gray-300 rounded-md"
+                                                ref="firstinput" autocomplete="off" v-model="sterm" />
+                                            <!-- Vue Search List Start-->
+                                            <div id="widgets">
+                                                <ul v-cloak v-if="posts"
+                                                    class="mt-1 w-full border-b border-gray-300 rounded-md bg-white absolute overflow-y-auto z-40">
+                                                    <template v-for="(post, index) in posts">
+                                                        <template v-if="index <= 4">
+                                                            <li
+                                                                class="px-4 py-3 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-gray-100 transition-colors">
+
+
+                                                                <div role="alert" class="alert shadow-lg"
+                                                                    @click="suggestClick(post.des, index)">
+                                                                    <vue-feather type="map-pin" size="20">
+                                                                    </vue-feather>
+                                                                    <div>
+                                                                        <h3 class="font-bold"> {{ post.des }}</h3>
+                                                                        <div class="text-xs">{{ post.typedes }}</div>
+                                                                    </div>
+
+                                                                </div>
+
+                                                            </li>
+                                                        </template>
+
+                                                    </template>
+                                                </ul>
+                                            </div>
+                                            <!-- Vue Search List End-->
+                                        </label>
+                                        <!--  -->
+
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-control">
+                                        <label class="input-group input-group-sm">
+                                            <span>Dorm Type</span>
+                                            <select class="select select-primary w-full"
+                                                v-model="final_search.dorm_type">
+                                                <template v-for="dt in dorm_type">
+                                                    <option :value="dt.id">{{ dt.des }}</option>
+                                                </template>
+                                                <option :value="0">ALL</option>
+                                            </select>
+                                        </label>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div class="form-control mt-4">
+
+                                        <button class="btn btn-primary">Search</button>
+                                    </div>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                    <!-- card -->
+
+
+                    <div class="flex place-content-center bg-base-100" v-if="dormfind.length > 0">
+                        <div class="grid grid-cols-1 gap-4 w-5/6">
+                            <template v-for="df in dormfind">
+                                <div class="rounded-md w-full shadow-xl">
+                                    <div class="card card-side bg-base-100 w-full">
+                                        <figure><img class="object-none h-48 w-96"
+                                                :src="'/storage/dormimg/' + df.filesystem_name" alt="Movie" /></figure>
+                                        <div class="card-body">
+                                            <h2 class="card-title">{{ df.name }}</h2>
+                                            <div class="flex justify-start">
+                                                {{ df.dorm_type }}
+                                            </div>
+                                            <div class="flex justify-start">
+                                                {{ df.address }}
+                                            </div>
+                                            <div class="text-wrap p-4"
+                                                style="text-align: justify;text-justify: inter-word;"
+                                                v-html="df.contact">
+                                            </div>
+                                            <div class="card-actions justify-end">
+                                                <button class="btn btn-primary" @click="showTab(df.id)">More</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div :id="df.id" style="display: none;">
+                                        <div role="tablist" class="tabs tabs-bordered">
+                                            <a role="tab" :id="`info_tab${df.id}`" class="tab tab-active">Info</a>
+                                            <!-- <a role="tab" :id="`photo_tab${df.id}`" class="tab"
+                                                @click="clickTabs(df.id, 2)">Photos</a> -->
+                                            <!-- <a role="tab" :id="`rev_tab${df.id}`" class="tab">Reviews</a> -->
+                                        </div>
+                                        <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
+
+                                            <div class="text-wrap p-4"
+                                                style="text-align: justify;text-justify: inter-word;"
+                                                v-html="df.description">
+                                            </div>
+                                        </div>
+                                        <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
+
+                                            <div class="text-wrap p-4">
+                                                <button class="btn btn-neutral" @click="reserveModal(df.id)">Reserve
+                                                    Now</button>
+                                            </div>
+                                        </div>
+                                        <div class="flex w-full" :id="`photocon${df.id}`">
+                                            <!--  -->
+                                            <div class="container mx-auto px-4">
+                                                <div class="grid grid-cols-3 gap-4 mt-10">
+                                                    <template v-for="p in df.photos">
+                                                        <div class="bg-cover"
+                                                            v-bind:style="{ 'background-image': 'url(/storage/dormimg/' + p.filesystem_name + ')' }"
+                                                            </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <!--  -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--  -->
+
+                                <!--  -->
+                            </template>
+                        </div>
+                    </div>
+                    <div class="flex place-content-center" v-if="statcode != 0">
+                        <div role="alert" class="alert alert-error">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="stroke-current shrink-0 h-6 w-6" fill="none"
+                                viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            <span>No result found!</span>
+                        </div>
+                    </div>
+                    <!-- card -->
+                    <!--  -->
+                    <div class="carousel w-50">
+                        <div id="item1" class="carousel-item w-full">
+                            <img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg"
+                                class="w-full" />
+                        </div>
+                        <div id="item2" class="carousel-item w-full">
+                            <img src="https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg"
+                                class="w-full" />
+                        </div>
+                        <div id="item3" class="carousel-item w-full">
+                            <img src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg"
+                                class="w-full" />
+                        </div>
+                        <div id="item4" class="carousel-item w-full">
+                            <img src="https://daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg"
+                                class="w-full" />
+                        </div>
+                    </div>
+                    <div class="flex justify-center w-full py-2 gap-2">
+                        <a href="#item1" class="btn btn-xs">1</a>
+                        <a href="#item2" class="btn btn-xs">2</a>
+                        <a href="#item3" class="btn btn-xs">3</a>
+                        <a href="#item4" class="btn btn-xs">4</a>
+                    </div>
+                    <!--  -->
+                </div>
+                <ReserveModal :reserve="reserve"></ReserveModal>
+                <!-- footer -->
+                <PubFooter></PubFooter>
+                <!-- footer -->
+            </div>
+
+        </div>
+
+    </div>
+</template>
+
+<script>
+import { useToast } from "vue-toastification";
+import Swal from "sweetalert2/dist/sweetalert2.js";
+import PhotoGallery from "./PhotoGallery.vue";
+import PubFooter from "./PubFooter.vue";
+import ReserveModal from "./ReserveModal.vue";
+export default {
+    data() {
+        return {
+            reserve: {
+                dorm_id: "",
+
+            },
+            sterm: "",
+
+            posts: "",
+            search: "",
+            limitationList: 5,
+            dorm_type: [],
+            final_search: {
+                location_id: null,
+                src: null,
+                dorm_type: 0,
+            },
+
+            dormimage: null,
+            currentTab: 1,
+            dormfind: [],
+            statcode: 0
+        };
+    },
+    mounted() {
+        this.searcAutosug();
+        setTimeout(() => {
+            //this.fucusme()
+            this.$refs.firstinput.focus();
+        }, 500);
+        this.getDormType();
+    },
+    setup() {
+        const toast = useToast();
+
+        // In case of a range picker, you'll receive [Date, Date]
+
+        return {
+            toast,
+        };
+    },
+    watch: {
+        sterm: function (val) {
+            this.sterm = val;
+
+            if (this.sterm == "") {
+                document.getElementById("widgets").style.display =
+                    "list-item";
+            }
+            this.getPosts();
+
+        },
+    },
+    methods: {
+        searchSubmit(event) {
+            event.preventDefault();
+            this.statcode = 0;
+            axios
+                .post("/accommodationSearchQuery", {
+                    datas: this.final_search
+
+                })
+                .then((response) => {
+                    //this.hasError = false;
+                    if (response.data.statcode == 1) {
+
+                        this.dormfind = response.data.result;
+                        this.statcode = 0;
+
+
+                    } else {
+                        this.statcode = 1;
+                        this.dormfind = [];
+                    }
+                })
+                .catch((error) => {
+                    this.errors = [];
+
+                    console.log(error.response);
+
+
+                });
+        },
+
+        //autosuggest start
+        searcAutosug() {
+            //start
+            self = this;
+
+            // get width of search input for vue search widget on initial load
+            this.width = document.getElementById("firstinput").offsetWidth;
+            // get width of search input for vue search widget when page resize
+            window.addEventListener("resize", function (event) {
+                self.width = document.getElementById("firstinput").offsetWidth;
+            });
+
+            // To clear vue search widget when click on body
+            document.body.addEventListener("click", function (e) {
+                self.clearData(e);
+            });
+
+            document
+                .getElementById("firstinput")
+                .addEventListener("keydown", function (e) {
+                    // check whether arrow keys are pressed
+                    if (_.includes([37, 38, 39, 40, 13], e.keyCode)) {
+                        if (e.keyCode === 38 || e.keyCode === 40) {
+                            // To prevent cursor from moving left or right in text input
+                            document.getElementById("widgets").style.display =
+                                "list-item";
+                            e.preventDefault();
+                        }
+
+                        if (e.keyCode === 40 && self.posts == "") {
+                            // If post list is cleared and search input is not empty
+                            // then call ajax again on down arrow key press
+                            document.getElementById("widgets").style.display =
+                                "list-item";
+                            // self.getPosts();
+
+                            return;
+                        }
+
+                        self.selectPost(e.keyCode);
+                    } else {
+                        document.getElementById("widgets").style.display =
+                            "list-item";
+                        // self.getPosts();
+                    }
+                });
+            //end
+        },
+        getPosts() {
+            this.posts = "";
+            this.count = 0;
+            self = this;
+            //this.isLoading = true;
+
+            //     if (this.payment.student_number.trim() != "") {
+            // this.isLoading = false;
+
+            axios
+                .post("/load-suggest", {
+                    search: this.sterm,
+                })
+                .then(function (response) {
+                    self.posts = response.data;
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            //  }
+        },
+        selectPost: function (keyCode) {
+            // If down arrow key is pressed
+
+            if (keyCode == 40 && this.count < this.posts.length) {
+                this.count++;
+            }
+            // If up arrow key is pressed
+            if (keyCode == 38 && this.count > 1) {
+                this.count--;
+            }
+            // If enter key is pressed
+            if (keyCode == 13) {
+                // Go to selected post
+                document.getElementById(this.count).childNodes[0].click();
+            }
+        },
+        clearData: function (e) {
+            if (e.target.id != "firstinput") {
+                (this.posts = ""), (this.count = 0);
+            }
+        },
+        suggestClick(a, index) {
+
+            this.errors = [];
+            //alert(a);
+            this.sterm = a;
+            this.final_search.location_id = this.posts[index].loc_code;
+            this.final_search.src = this.posts[index].src;
+            document.getElementById("widgets").style.display = "none";
+            setTimeout(() => {
+                //this.fucusme()
+                this.$refs.firstinput.focus();
+            }, 100);
+        },
+        //end
+
+        reserveModal(id) {
+            this.reserve.dorm_id = id;
+            reserve_modal.showModal();
+        },
+
+        showTab(id) {
+
+            var state = document.getElementById(id).style.display;
+
+            if (state == 'inline-block') {
+                document.getElementById(id).style.display = "none";
+            } else {
+                document.getElementById(id).style.display = "inline-block";
+            }
+
+            // console.log(document.getElementById(id).style.display);
+        },
+        getDormType() {
+            // `/form/common-refprovince?page=${this.tbl.page}`
+
+            axios.get(`/pub/dorm-type-get`)
+                .then(({ data }) => {
+                    this.dorm_type = data;
+
+                });
+        },
+
+        formatPrice(value) {
+            let val = (value / 1).toFixed(2).replace(".", ".");
+            return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        },
+    },
+
+    components: {
+        PubFooter,
+        PhotoGallery,
+        ReserveModal
+    },
+    computed: {},
+};
+</script>
+<style scoped>
+/* Animations */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes slideIn {
+    0% {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.bg-gray-100 {
+    background-color: #f7fafc;
+}
+
+.h-screen {
+    height: 100vh;
+}
+
+.container {
+    width: 100%;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.mt-10 {
+    margin-top: 2.5rem;
+}
+
+/* 
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    grid-gap: 1rem;
+    justify-items: center;
+}
+
+.grid-cols-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.gap-4 {
+    gap: 1rem;
+} */
+
+.bg-cover {
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    height: 200px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.bg-cover:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease-in-out;
+}
+
+/* ani */
+.bg-div {
+    background-image: url("/img/fem_bldg.jpg");
+    background-size: cover;
+    color: black;
+    /* position: relative; */
+}
+
+[v-cloak] {
+    display: none;
+}
+
+.widget {
+    border: 1px solid #c5c5c5;
+    background: white;
+    list-style: none;
+}
+
+.list_item_container {
+    top: 51%;
+    width: 93%;
+    position: fixed;
+    float: left;
+    overflow: auto;
+}
+
+.vs__search {
+    position: static !important;
+}
+</style>

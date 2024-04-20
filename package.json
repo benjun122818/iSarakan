@@ -1,0 +1,38 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "npm run development",
+        "development": "mix",
+        "watch": "mix watch",
+        "watch-poll": "mix watch -- --watch-options-poll=1000",
+        "hot": "mix watch --hot",
+        "prod": "npm run production",
+        "production": "mix --production"
+    },
+    "devDependencies": {
+        "@tailwindcss/forms": "^0.5.2",
+        "alpinejs": "^3.4.2",
+        "autoprefixer": "^10.4.2",
+        "axios": "^0.21",
+        "laravel-mix": "^6.0.6",
+        "lodash": "^4.17.19",
+        "postcss": "^8.4.6",
+        "tailwindcss": "^3.1.0"
+    },
+    "dependencies": {
+        "@syncfusion/ej2-vue-dropdowns": "^20.2.38",
+        "@vuepic/vue-datepicker": "^3.3.0",
+        "daisyui": "^4.6.0",
+        "feather-icons": "^4.29.1",
+        "sweetalert2": "^11.4.19",
+        "vue": "^3.4.15",
+        "vue-feather": "^2.0.0",
+        "vue-loader": "^17.0.0",
+        "vue-loading-overlay": "5.0",
+        "vue-router": "^4.0.13",
+        "vue-select": "^4.0.0-beta.3",
+        "vue-suggestion": "^2.0.0",
+        "vue-toastification": "^2.0.0-rc.5",
+        "vue3-simple-typeahead": "^1.0.7"
+    }
+}
