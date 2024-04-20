@@ -52,7 +52,7 @@
             <p>Thank you for chosing our dorm as part of your academic journey in Mariano Marcos State university.</p>
             <p>Rest assured that we will give our best services we can offer.</p>
 
-
+            <p>Dorm Details Here.</p>
         </div>
         <div class="message">
             <p>Please visit us within 24 hours upon receiving this email to sign contract or else your reservevation will be forfited.</p>
