@@ -168,6 +168,7 @@ class SubsController extends Controller
         $email = $tmp_user->email;
 
         //return $tmp_user;
+        //return $tmp_user;
 
         DB::beginTransaction();
         try {
