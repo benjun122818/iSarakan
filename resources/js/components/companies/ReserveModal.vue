@@ -126,7 +126,7 @@ export default {
         return {
             reserva: {
                 name: null,
-                email: 'beniziox44@gmail.com',
+                email: '',
                 contact: null,
                 verification: null
             },

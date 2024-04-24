@@ -166,4 +166,22 @@ class AjaxController extends Controller
         $d = DormType::all();
         return $d;
     }
+
+    public function get_muni_in()
+    {
+
+        $citymuni = CityMuni::whereIn('refcitymun.id', [5, 12, 8, 16, 9])
+            ->leftjoin('refprovince', 'refprovince.provCode', 'refcitymun.provCode')
+            ->select([
+                'refcitymun.id',
+                'refcitymun.citymunDesc',
+                'refcitymun.citymunCode AS loc_code',
+                'refprovince.provDesc AS provmuni',
+                // \DB::raw('citymunCode AS leader'),
+                \DB::raw('"2" as src')
+            ])
+            ->limit(5)->get();
+
+        return $citymuni;
+    }
 }

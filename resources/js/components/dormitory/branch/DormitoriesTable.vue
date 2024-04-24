@@ -18,8 +18,9 @@
                         <div class="form-control">
                             <label class="input-group input-group-sm">
                                 <span>Search</span>
-                                <input type="text" placeholder="Type here" class="input input-bordered input-primary w-full"
-                                    id="filterbox" v-model="tbl.search" v-on:input="getUsers(tbl.page)" />
+                                <input type="text" placeholder="Type here"
+                                    class="input input-bordered input-primary w-full" id="filterbox"
+                                    v-model="tbl.search" v-on:input="getUsers(tbl.page)" />
                             </label>
                         </div>
                     </div>
@@ -48,6 +49,7 @@
                                 <th>Description</th>
                                 <th>Contact</th>
                                 <th>Type</th>
+                                <th>Availability</th>
                                 <th>Status</th>
                                 <th></th>
                             </tr>
@@ -64,10 +66,20 @@
                                         <div v-html="s.contact"></div>
                                     </td>
                                     <td>{{ (s.type == 1 ? 'Main' : 'Branch') }}</td>
+
                                     <td>
-                                        {{
-                                            s.status == 0 ? 'Withhold' : "Publish"
-                                        }}
+                                        <template v-if="s.availability == 1">
+                                            <input type="checkbox" class="toggle"
+                                                @click="updateAvailability(s.id, s.availability)" checked />
+                                        </template>
+                                        <template v-else>
+                                            <input type="checkbox" class="toggle"
+                                                @click="updateAvailability(s.id, s.availability)" />
+                                        </template>
+
+                                    </td>
+                                    <td>
+                                        {{ setStatus(s.status) }}
                                     </td>
                                     <td style="width: 10%">
                                         <div class="join">
@@ -172,6 +184,48 @@ export default {
                     this.tbl.total_records = data.total_records;
                     this.tbl.total_pages = data.total_pages;
                 });
+        },
+        updateAvailability(id, state) {
+            // alert(id)
+            // return;
+            axios
+                .post("/dorm/update-available", {
+                    id: id,
+                    state: state
+
+                })
+                .then((response) => {
+                    //this.hasError = false;
+
+                    this.getUsers();
+
+                })
+                .catch((error) => {
+                    this.errors = [];
+
+                    if (error.response.data.errors.name) {
+                        this.errors.push(error.response.data.errors.name[0]);
+                    }
+
+                });
+        },
+        setStatus(r) {
+            var role = '';
+
+            switch (r) {
+                case 0:
+                    role = 'unconfirmed';
+                    break;
+                case 1:
+                    role = 'confirmed';
+                    break;
+                case 2:
+                    role = 'For eavaluation ';
+                    break;
+
+            }
+
+            return role;
         },
         iniUpdate(id) {
             this.$router.push({

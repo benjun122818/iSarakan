@@ -22,6 +22,7 @@ Route::post('load-suggest', 'App\Http\Controllers\AjaxController@loadInfoSuggest
 Route::post('user/subscribe', 'App\Http\Controllers\AjaxController@subscribe');
 Route::get('get-feather-icons', 'App\Http\Controllers\HomeController@get_feather_icons');
 Route::get('pub/dorm-type-get', 'App\Http\Controllers\AjaxController@dorm_type_get');
+Route::get('pub/muni-get', 'App\Http\Controllers\AjaxController@get_muni_in');
 
 //Route::get('/sendhtmlemail', 'App\Http\Controllers\MailController@html_email');
 Route::post('reservation/initial', 'App\Http\Controllers\MailController@ini_reserve');
@@ -36,6 +37,7 @@ Route::get('admin/user-table', 'App\Http\Controllers\Administrator\UserControlle
 Route::resource('admin/user', 'App\Http\Controllers\Administrator\UserController');
 Route::get('admin/dorm-branches', 'App\Http\Controllers\Administrator\DormBranchController@dorm_branch_tbl');
 Route::post('admin/form/dorm-data-get', 'App\Http\Controllers\Administrator\DormBranchController@edit');
+
 Route::post('admin/form/dorm-for-approval', 'App\Http\Controllers\Administrator\DormBranchController@forapprove_dorm_branch');
 Route::post('admin/photo/set-primary', 'App\Http\Controllers\Administrator\DormBranchController@photo_set_primary');
 Route::post('admin/featured/set-featured', 'App\Http\Controllers\Administrator\DormBranchController@set_featured');
@@ -63,6 +65,7 @@ Route::get('form/dorm-amenities-get/{id}', 'App\Http\Controllers\Dormitories\Dor
 Route::post('form/dorm-amenities-remove', 'App\Http\Controllers\Dormitories\DormBranchController@remove_amenities');
 Route::post('/form/dorm-for-approval', 'App\Http\Controllers\Dormitories\DormBranchController@forapprove_dorm_branch');
 Route::post('dorm/photo/set-primary', 'App\Http\Controllers\Dormitories\DormBranchController@photo_set_primary');
+Route::post('dorm/update-available', 'App\Http\Controllers\Dormitories\DormBranchController@update_available');
 
 Route::get('dorm/reservations/data-table', 'App\Http\Controllers\Dormitories\ReservationController@dorm_reser_tbl');
 Route::post('dorm/reservations/confirm', 'App\Http\Controllers\Dormitories\ReservationController@confirm_dorm_reservation');

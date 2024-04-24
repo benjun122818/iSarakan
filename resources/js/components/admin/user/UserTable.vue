@@ -4,7 +4,7 @@
             <div class="card-body">
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <h2 class="card-title">Users</h2>
+                        <h2 class="card-title">Users Table</h2>
                     </div>
                     <div class="card-actions justify-end">
                         <button class="btn btn-sm btn-info" @click="buttonNewUser">
@@ -18,8 +18,9 @@
                         <div class="form-control">
                             <label class="input-group input-group-sm">
                                 <span>Search</span>
-                                <input type="text" placeholder="Type here" class="input input-bordered input-primary w-full"
-                                    id="filterbox" v-model="tbl.search" v-on:input="getUsers(tbl.page)" />
+                                <input type="text" placeholder="Type here"
+                                    class="input input-bordered input-primary w-full" id="filterbox"
+                                    v-model="tbl.search" v-on:input="getUsers(tbl.page)" />
                             </label>
                         </div>
                     </div>
@@ -48,8 +49,7 @@
                                 <th>User name</th>
                                 <th>Email</th>
                                 <th>Type</th>
-                                <th>Office</th>
-                                <th>Responsibity Center</th>
+
                                 <th></th>
                             </tr>
                         </thead>
@@ -58,15 +58,10 @@
                                 <tr>
                                     <td>{{ s.id }}</td>
                                     <td>{{ s.name }}</td>
-                                    <td>{{ s.user_name }}</td>
+                                    <td>{{ s.username }}</td>
                                     <td>{{ s.email }}</td>
-                                    <td>{{ s.type }}</td>
-                                    <td>{{ s.rc != null ? s.rc : "n/a" }}</td>
-                                    <td>
-                                        {{
-                                            s.office != null ? s.office : "n/a"
-                                        }}
-                                    </td>
+                                    <td>{{ setRole(s.role) }}</td>
+
                                     <td style="width: 10%">
                                         <div class="join">
                                             <button class="btn btn-info btn-sm join-item" @click="iniUpdate(index)">
@@ -170,6 +165,25 @@ export default {
                     this.tbl.total_records = data.total_records;
                     this.tbl.total_pages = data.total_pages;
                 });
+        },
+
+        setRole(r) {
+            var role = '';
+
+            switch (r) {
+                case 1:
+                    role = 'Admin';
+                    break;
+                case 2:
+                    role = 'Dorm maneger';
+                    break;
+                case 3:
+                    role = 'Client';
+                    break;
+
+            }
+
+            return role;
         },
 
         buttonNewUser() {

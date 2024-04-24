@@ -64,7 +64,8 @@ class SubController extends Controller
                 'dorm_type' => $i->dorm_type,
                 'address' => $i->address,
                 'contact' => $i->contact,
-                'filesystem_name' => $i->filesystem_name
+                'filesystem_name' => $i->filesystem_name,
+                'availability' => $i->availability
             ];
 
             $img = DormImg::where('dorm_branch_id', $i->id)->get();

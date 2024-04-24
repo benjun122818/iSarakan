@@ -2,7 +2,7 @@
     <div class="flex flex-col w-full">
         <footer class="footer p-10 bg-base-200 text-base-content">
             <form @submit="userSubmit">
-                <h6 class="footer-title">Be a Partner</h6>
+                <h6 class="footer-title">Be a Dorm provider in mmsu</h6>
                 <fieldset class="form-control w-full">
                     <label class="label">
                         <span class="label-text">Enter your email address</span>

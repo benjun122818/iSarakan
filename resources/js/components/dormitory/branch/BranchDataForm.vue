@@ -2,7 +2,7 @@
     <div class="p-0 w-full">
         <div class="card w-full bg-base-100 shadow-xl">
             <div class="card-body">
-                <h2 class="card-title">Data Form Form</h2>
+                <h2 class="card-title">Data Form</h2>
                 <div role="alert" class="alert alert-info shadow-lg">
                     <vue-feather type="alert-circle" size="20"></vue-feather>
                     <span>First dorm branch to register is considered as the main branch.</span>
@@ -40,8 +40,8 @@
                                     <label class="label">
                                         <span class="label-text">Name</span>
                                     </label>
-                                    <input type="text" placeholder="Type here" class="input input-sm input-bordered w-full"
-                                        v-model="dorm.name" />
+                                    <input type="text" placeholder="Type here"
+                                        class="input input-sm input-bordered w-full" v-model="dorm.name" />
                                 </div>
 
                                 <!-- <div class="form-control w-full">
@@ -67,8 +67,10 @@
                                         <span class="label-text">Contact</span>
                                     </label>
                                     <div class="form-control w-full col-span-2">
-                                        <p><vue-feather type="alert-circle" size="20"></vue-feather> Contact Example.</p>
-                                        <p>Newport Boulevard , 1309 , Manila , Philippines<br>Telephone: +63 6302 908-8600 |
+                                        <p><vue-feather type="alert-circle" size="20"></vue-feather> Contact Example.
+                                        </p>
+                                        <p>Newport Boulevard , 1309 , Manila , Philippines<br>Telephone: +63 6302
+                                            908-8600 |
                                             <a title="site" href="https://www.google.com">Official dorm site</a>
                                         </p>
                                     </div>
@@ -92,7 +94,8 @@
                                     <label class="label">
                                         <span class="label-text">Region</span>
                                     </label>
-                                    <select class="select select-bordered" v-model="dorm.region" @change="getRefprovince()">
+                                    <select class="select select-bordered" v-model="dorm.region"
+                                        @change="getRefprovince()">
                                         <option disabled selected>Pick one</option>
                                         <template v-for="region in refregion">
                                             <option :value="region.regCode">{{ region.regDesc }}</option>
@@ -103,7 +106,8 @@
                                     <label class="label">
                                         <span class="label-text">Province</span>
                                     </label>
-                                    <select class="select select-bordered" v-model="dorm.prov" @change="getRefcitymun()">
+                                    <select class="select select-bordered" v-model="dorm.prov"
+                                        @change="getRefcitymun()">
                                         <option disabled selected>Pick one</option>
                                         <template v-for="prov in refprovince">
                                             <option :value="prov.provCode">{{ prov.provDesc }}</option>
@@ -115,7 +119,8 @@
                                     <label class="label">
                                         <span class="label-text">City/Municipality</span>
                                     </label>
-                                    <select class="select select-bordered" v-model="dorm.citymuni" @change="getRefbrgy()">
+                                    <select class="select select-bordered" v-model="dorm.citymuni"
+                                        @change="getRefbrgy()">
                                         <option disabled selected>Pick one</option>
                                         <template v-for="citymun in refcitymun">
                                             <option :value="citymun.citymunCode">{{ citymun.citymunDesc }}</option>

@@ -1,6 +1,6 @@
 import adminRoute from "./composables/adminRoute";
 import dormitoryRoute from "./composables/dormitoryRoute";
-import enrollmentRoute from "./composables/enrollmetRoute";
+//import enrollmentRoute from "./composables/enrollmetRoute";
 import CompaniesIndex from "./components/companies/CompaniesIndex";
 import PubIndex from "./components/companies/PubIndex";
 import Asuggest from "./components/companies/Asuggest";
@@ -8,7 +8,7 @@ import Asuggest from "./components/companies/Asuggest";
 export const routes = [
     ...adminRoute,
     ...dormitoryRoute,
-    ...enrollmentRoute,
+    //...enrollmentRoute,
     {
         path: "/",
         name: "Pub",

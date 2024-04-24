@@ -195,6 +195,29 @@ class DormBranchController extends Controller
         return response()->json(["dorm" => $d, "refprovince" => $refprovince,  "refcitymun" => $refcitymun, "refbrgy" => $refbrgy]);
     }
 
+    public function update_available(Request $request)
+    {
+
+        //return  $request->all();
+        $id = $request->id;
+        $state = $request->state;
+
+        $d = DormBranch::find($id);
+        // return $d;
+
+        if ($state == 1) {
+            $d->availability   = 0;
+            $d->save();
+        } else {
+            $d->availability   = 1;
+            $d->save();
+        }
+
+
+
+        return 1;
+    }
+
     public function upload_supporting_doc(Request $request)
     {
         $user_id = Auth::user()->id;

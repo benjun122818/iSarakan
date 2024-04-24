@@ -11,40 +11,19 @@
                                         <!--  -->
                                         <label class="input-group input-group-sm">
                                             <span>Preferred Location</span>
-                                            <!-- Vue SearchStart-->
-                                            <input type="text" id="firstinput" placeholder="Where to?"
-                                                class="px-5 py-3 w-full border border-gray-300 rounded-md"
-                                                ref="firstinput" autocomplete="off" v-model="sterm" />
-                                            <!-- Vue Search List Start-->
-                                            <div id="widgets">
-                                                <ul v-cloak v-if="posts"
-                                                    class="mt-1 w-full border-b border-gray-300 rounded-md bg-white absolute overflow-y-auto z-40">
-                                                    <template v-for="(post, index) in posts">
-                                                        <template v-if="index <= 4">
-                                                            <li
-                                                                class="px-4 py-3 border-b border-gray-200 text-stone-600 cursor-pointer hover:bg-gray-100 transition-colors">
+                                            <select class="select select-primary w-full max-w-xs" v-model="select_loc"
+                                                @change="selectChange">
+                                                <option disabled selected>Select Location</option>
+                                                <template v-for="m in munis">
+                                                    <option :value="m.loc_code">{{ m.citymunDesc }}</option>
+
+                                                </template>
+                                            </select>
+                                            <!--  -->
 
 
-                                                                <div role="alert" class="alert shadow-lg"
-                                                                    @click="suggestClick(post.des, index)">
-                                                                    <vue-feather type="map-pin" size="20">
-                                                                    </vue-feather>
-                                                                    <div>
-                                                                        <h3 class="font-bold"> {{ post.des }}</h3>
-                                                                        <div class="text-xs">{{ post.typedes }}</div>
-                                                                    </div>
-
-                                                                </div>
-
-                                                            </li>
-                                                        </template>
-
-                                                    </template>
-                                                </ul>
-                                            </div>
                                             <!-- Vue Search List End-->
                                         </label>
-                                        <!--  -->
 
                                     </div>
                                 </li>
@@ -115,8 +94,15 @@
                                         <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
 
                                             <div class="text-wrap p-4">
-                                                <button class="btn btn-neutral" @click="reserveModal(df.id)">Reserve
-                                                    Now</button>
+                                                <template v-if="df.availability == 1">
+                                                    <button class="btn btn-neutral" @click="reserveModal(df.id)">Reserve
+                                                        Now</button>
+                                                </template>
+                                                <template v-else>
+                                                    <button class="btn btn-error">Not
+                                                        Available for reservation</button>
+                                                </template>
+
                                             </div>
                                         </div>
                                         <div class="flex w-full" :id="`photocon${df.id}`">
@@ -208,12 +194,13 @@ export default {
             search: "",
             limitationList: 5,
             dorm_type: [],
+            munis: [],
             final_search: {
                 location_id: null,
                 src: null,
                 dorm_type: 0,
             },
-
+            select_loc: null,
             dormimage: null,
             currentTab: 1,
             dormfind: [],
@@ -221,12 +208,13 @@ export default {
         };
     },
     mounted() {
-        this.searcAutosug();
-        setTimeout(() => {
-            //this.fucusme()
-            this.$refs.firstinput.focus();
-        }, 500);
+        // this.searcAutosug();
+        // setTimeout(() => {
+        //     //this.fucusme()
+        //     this.$refs.firstinput.focus();
+        // }, 500);
         this.getDormType();
+        this.getMuni();
     },
     setup() {
         const toast = useToast();
@@ -237,22 +225,23 @@ export default {
             toast,
         };
     },
-    watch: {
-        sterm: function (val) {
-            this.sterm = val;
+    // watch: {
+    //     sterm: function (val) {
+    //         this.sterm = val;
 
-            if (this.sterm == "") {
-                document.getElementById("widgets").style.display =
-                    "list-item";
-            }
-            this.getPosts();
+    //         if (this.sterm == "") {
+    //             document.getElementById("widgets").style.display =
+    //                 "list-item";
+    //         }
+    //         this.getPosts();
 
-        },
-    },
+    //     },
+    // },
     methods: {
         searchSubmit(event) {
             event.preventDefault();
             this.statcode = 0;
+
             axios
                 .post("/accommodationSearchQuery", {
                     datas: this.final_search
@@ -279,7 +268,13 @@ export default {
 
                 });
         },
+        selectChange() {
+            var id = this.select_loc;
+            var result = this.munis.find((item) => item.loc_code === id);
 
+            this.final_search.location_id = result.loc_code;
+            this.final_search.src = result.src;
+        },
         //autosuggest start
         searcAutosug() {
             //start
@@ -401,6 +396,15 @@ export default {
             }
 
             // console.log(document.getElementById(id).style.display);
+        },
+        getMuni() {
+            // `/form/common-refprovince?page=${this.tbl.page}`
+
+            axios.get(`/pub/muni-get`)
+                .then(({ data }) => {
+                    this.munis = data;
+
+                });
         },
         getDormType() {
             // `/form/common-refprovince?page=${this.tbl.page}`
