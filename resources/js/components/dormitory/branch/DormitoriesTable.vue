@@ -76,7 +76,7 @@
                                             <input type="checkbox" class="toggle"
                                                 @click="updateAvailability(s.id, s.availability)" />
                                         </template>
-
+                                        <!-- // -->
                                     </td>
                                     <td>
                                         {{ setStatus(s.status) }}
