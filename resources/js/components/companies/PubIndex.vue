@@ -77,7 +77,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div :id="df.id" style="display: none;">
+                                    <div :id="df.id" class="w-full" style="display: none;">
                                         <div role="tablist" class="tabs tabs-bordered">
                                             <a role="tab" :id="`info_tab${df.id}`" class="tab tab-active">Info</a>
                                             <!-- <a role="tab" :id="`photo_tab${df.id}`" class="tab"

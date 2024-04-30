@@ -32747,6 +32747,7 @@ function render(_ctx, _cache, $props, $setup, $data, $options) {
     /* PROPS */
     , _hoisted_29)])])]), (0,vue__WEBPACK_IMPORTED_MODULE_0__.createElementVNode)("div", {
       id: df.id,
+      "class": "w-full",
       style: {
         "display": "none"
       }
