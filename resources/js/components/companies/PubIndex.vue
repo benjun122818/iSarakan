@@ -138,14 +138,12 @@
                     </div>
                     <!-- card -->
                     <!--  -->
-                    <div class="carousel w-50">
+                    <div class="carousel w-50"> 
                         <div id="item1" class="carousel-item w-full">
-                            <img src="https://daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.jpg"
-                                class="w-full" />
+                            <img :src="'/storage/dormimg/0BIY4p3RM4DkB60BnTWcHMy4KobjiaGtUHskLFlx.jpg'" style="width: 100%;height: 450px;" height="600"/>
                         </div>
                         <div id="item2" class="carousel-item w-full">
-                            <img src="https://daisyui.com/images/stock/photo-1609621838510-5ad474b7d25d.jpg"
-                                class="w-full" />
+                            <img :src="'/storage/dormimg/uyQG6IV2PP7IGKC5pdbWqzkZ9V1VffVqyVTH2p16.jpg'" style="width: 100%;height: 450px;" height="600" />
                         </div>
                         <div id="item3" class="carousel-item w-full">
                             <img src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg"
