@@ -23,6 +23,7 @@ Route::post('user/subscribe', 'App\Http\Controllers\AjaxController@subscribe');
 Route::get('get-feather-icons', 'App\Http\Controllers\HomeController@get_feather_icons');
 Route::get('pub/dorm-type-get', 'App\Http\Controllers\AjaxController@dorm_type_get');
 Route::get('pub/muni-get', 'App\Http\Controllers\AjaxController@get_muni_in');
+Route::get('pub/dorm-featured', 'App\Http\Controllers\AjaxController@get_featured');
 
 //Route::get('/sendhtmlemail', 'App\Http\Controllers\MailController@html_email');
 Route::post('reservation/initial', 'App\Http\Controllers\MailController@ini_reserve');

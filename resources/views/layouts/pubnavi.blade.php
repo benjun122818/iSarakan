@@ -18,7 +18,7 @@
         <li><a>Item 3</a></li>
       </ul>
     </div>
-    <a class="btn btn-ghost text-xl">iSARAKAN ACCREDITED DORMITORY</a>
+    <a class="btn btn-ghost text-xl">iSARAKAN ACCREDITED DORMITORY </a>
   </div>
   <div class="navbar-center hidden lg:flex">
     <!-- <ul class="menu menu-horizontal px-1">
@@ -36,6 +36,6 @@
     </ul> -->
   </div>
   <div class="navbar-end">
-    <!-- <a class="btn">Button</a> -->
+    <a href="/login" class="btn">log in</a>
   </div>
 </div>

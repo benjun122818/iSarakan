@@ -7,6 +7,7 @@ use App\Models\CityMuni;
 use App\Models\Brgy;
 use App\Models\TmpUser;
 use App\Models\DormType;
+use App\Models\Featured;
 use Illuminate\Http\Request;
 use DB;
 
@@ -164,6 +165,19 @@ class AjaxController extends Controller
     {
         //  return $request->all();
         $d = DormType::all();
+        return $d;
+    }
+
+    public function get_featured(Request $request)
+    {
+        //  return $request->all();
+        $d = Featured::leftjoin('dorm_img', 'dorm_img.dorm_branch_id', 'featureds.dorm_id')
+            ->where('featureds.status', 1)
+            ->where('dorm_img.prima', 1)
+            ->select([
+                'featureds.id',
+                'dorm_img.filesystem_name',
+            ])->get();
         return $d;
     }
 

@@ -138,27 +138,20 @@
                     </div>
                     <!-- card -->
                     <!--  -->
-                    <div class="carousel w-50"> 
-                        <div id="item1" class="carousel-item w-full">
-                            <img :src="'/storage/dormimg/0BIY4p3RM4DkB60BnTWcHMy4KobjiaGtUHskLFlx.jpg'" style="width: 100%;height: 450px;" height="600"/>
-                        </div>
-                        <div id="item2" class="carousel-item w-full">
-                            <img :src="'/storage/dormimg/uyQG6IV2PP7IGKC5pdbWqzkZ9V1VffVqyVTH2p16.jpg'" style="width: 100%;height: 450px;" height="600" />
-                        </div>
-                        <div id="item3" class="carousel-item w-full">
-                            <img src="https://daisyui.com/images/stock/photo-1414694762283-acccc27bca85.jpg"
-                                class="w-full" />
-                        </div>
-                        <div id="item4" class="carousel-item w-full">
-                            <img src="https://daisyui.com/images/stock/photo-1665553365602-b2fb8e5d1707.jpg"
-                                class="w-full" />
-                        </div>
+                    <div class="carousel w-50">
+                        <template v-for="fi in feature_img">
+                            <div :id="`item${fi.id}`" class="carousel-item w-full">
+                                <img :src="`/storage/dormimg/${fi.filesystem_name}`" style="width: 100%;height: 450px;"
+                                    height="600" />
+                            </div>
+                        </template>
+
+
                     </div>
                     <div class="flex justify-center w-full py-2 gap-2">
-                        <a href="#item1" class="btn btn-xs">1</a>
-                        <a href="#item2" class="btn btn-xs">2</a>
-                        <a href="#item3" class="btn btn-xs">3</a>
-                        <a href="#item4" class="btn btn-xs">4</a>
+                        <template v-for="(fib, ind) in feature_img">
+                            <a :href="`#item${fib.id}`" class="btn btn-xs">{{ ++ind }}</a>
+                        </template>
                     </div>
                     <!--  -->
                 </div>
@@ -202,6 +195,7 @@ export default {
             dormimage: null,
             currentTab: 1,
             dormfind: [],
+            feature_img: [],
             statcode: 0
         };
     },
@@ -213,6 +207,7 @@ export default {
         // }, 500);
         this.getDormType();
         this.getMuni();
+        this.getFeatured();
     },
     setup() {
         const toast = useToast();
@@ -394,6 +389,15 @@ export default {
             }
 
             // console.log(document.getElementById(id).style.display);
+        },
+        getFeatured() {
+            // `/form/common-refprovince?page=${this.tbl.page}`
+
+            axios.get(`/pub/dorm-featured`)
+                .then(({ data }) => {
+                    this.feature_img = data;
+
+                });
         },
         getMuni() {
             // `/form/common-refprovince?page=${this.tbl.page}`
