@@ -111,8 +111,13 @@
                                                 <div class="grid grid-cols-3 gap-4 mt-10">
                                                     <template v-for="p in df.photos">
                                                         <div class="bg-cover"
-                                                            v-bind:style="{ 'background-image': 'url(/storage/dormimg/' + p.filesystem_name + ')' }"
-                                                            </div>
+                                                            @click="viewImg(p.id, p.filesystem_name, df.name)"
+                                                            v-bind:style="{
+                            'background-image': 'url(/storage/dormimg/'
+                                + p.filesystem_name + ')'
+                        }">
+                                                        </div>
+
                                                     </template>
                                                 </div>
                                             </div>
@@ -159,6 +164,23 @@
                 <!-- footer -->
                 <PubFooter></PubFooter>
                 <!-- footer -->
+                <!-- modal view img -->
+                <input type="checkbox" id="view_pimg_status" class="modal-toggle" />
+                <div class="modal">
+                    <div class="modal-box w-11/12 max-w-5xl">
+                        <h3 class="font-bold text-lg">
+                            {{ dormname }}
+                        </h3>
+
+                        <div class="py-4">
+                            <img class="prev-img" id="dormimgp" />
+                        </div>
+                        <div class="modal-action">
+                            <label for="view_pimg_status" class="btn">Close!</label>
+                        </div>
+                    </div>
+                </div>
+                <!-- modal view img -->
             </div>
 
         </div>
@@ -185,6 +207,7 @@ export default {
             search: "",
             limitationList: 5,
             dorm_type: [],
+            dormname: "",
             munis: [],
             final_search: {
                 location_id: null,
@@ -231,6 +254,15 @@ export default {
     //     },
     // },
     methods: {
+        viewImg(id, systemfile, dorm) {
+
+
+            document.getElementById("view_pimg_status").checked = true;
+            document.getElementById("dormimgp").src = `/storage/dormimg/${systemfile}`;
+            this.dormname = dorm;
+            systemfile;
+
+        },
         searchSubmit(event) {
             event.preventDefault();
             this.statcode = 0;

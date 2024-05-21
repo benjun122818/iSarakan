@@ -45,12 +45,22 @@
                                         class="input input-sm input-bordered w-full" v-model="reserva.contact" />
                                 </div>
                                 <div class="form-control w-full col-span-2">
-                                    <div class="label" v-if="created_vercode == 1">
-                                        <span class="label-text-alt">Enter the verification code we've sent to
-                                            {{ reserva.email }}to manage all your bookings in one place</span>
+                                    <div class="label">
+                                        <div role="alert" class="alert alert-info" v-if="created_vercode == 1">
+                                            <span class="label-text-alt">Enter the verification code we've sent to
+                                                {{ reserva.email }} to manage all your bookings in one place. </span>
+
+                                        </div>
                                     </div>
+
                                     <input type="text" placeholder="Verification code"
                                         class="input input-lg input-bordered w-full" v-model="reserva.verification" />
+                                    <div class="label" v-if="created_vercode == 1">
+                                        <span class="label-text-alt"><button @click="verifyGencode"
+                                                class="btn btn-link">Click here to resend
+                                                verification code</button></span>
+
+                                    </div>
                                 </div>
 
                             </div>
@@ -246,6 +256,19 @@ export default {
                     if (response.data.status == 1) {
 
                         this.created_vercode = response.data.created_vercode;
+                        this.toast.success(`Verification code sent to ${this.reserva.email}`, {
+                            position: "top-right",
+                            timeout: 8000,
+                            closeOnClick: true,
+                            pauseOnFocusLoss: true,
+                            pauseOnHover: true,
+                            draggable: true,
+                            draggablePercent: 0.6,
+                            showCloseButtonOnHover: false,
+                            closeButton: "button",
+                            icon: true,
+                            rtl: false,
+                        });
 
                     }
                 })

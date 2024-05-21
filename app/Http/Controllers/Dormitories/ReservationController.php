@@ -94,15 +94,22 @@ class ReservationController extends Controller
             ], 200);
         } else {
             $search = $request->search;
-            $t = Reservation::where('user_id', $user_id)->get();
+            $t = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')->where('dorm_branch.user_id', $user_id)->get();
             //return $t;
             $s = [];
             $total_records =  0;
             if (count($t) > 0) {
-                $s = Reservation::where('user_id', $user_id)->where('description', 'LIKE', "%{$search}%")
-                    ->orWhere('name', 'LIKE', "%{$search}%")
+                $s = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')->where('dorm_branch.user_id', $user_id)->where('dorm_branch.description', 'LIKE', "%{$search}%")
+                    ->orWhere('dorm_branch.name', 'LIKE', "%{$search}%")
+                    ->orWhere('reservations.name', 'LIKE', "%{$search}%")
+                    ->orWhere('reservations.email', 'LIKE', "%{$search}%")
+                    ->orWhere('reservations.contact', 'LIKE', "%{$search}%")
                     ->offset($start_from)
                     ->limit($per_page_record)
+                    ->select([
+                        'reservations.*',
+                        'dorm_branch.name as dormitory',
+                    ])
                     ->get();
 
                 $total_records =  $s->count();

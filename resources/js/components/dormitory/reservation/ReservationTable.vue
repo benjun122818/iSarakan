@@ -44,7 +44,7 @@
                     <table class="table table-compact w-full" id="item-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Dorm</th>
                                 <th>Name</th>
                                 <th>Email</th>
@@ -58,7 +58,7 @@
                         <tbody>
                             <template v-for="(s, index) in users">
                                 <tr>
-                                    <td>{{ s.id }}</td>
+                                    <td>{{ ++index }}</td>
                                     <td>{{ s.dormitory }}</td>
                                     <td>{{ s.name }}</td>
                                     <td>
