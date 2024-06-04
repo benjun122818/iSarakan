@@ -7,6 +7,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\DormBranch;
 use App\Models\DormImg;
+use App\Models\Amenities;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -69,8 +70,11 @@ class SubController extends Controller
             ];
 
             $img = DormImg::where('dorm_branch_id', $i->id)->get();
+            $amenities = Amenities::where('dorm_branch_id', $i->id)->get();
+
 
             $obj['photos'] = $img;
+            $obj['amenities'] = $amenities;
 
             $data[] = $obj;
         }

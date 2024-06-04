@@ -13,18 +13,19 @@
                                             <span>Preferred Location</span>
                                             <select class="select select-primary w-full max-w-xs" v-model="select_loc"
                                                 @change="selectChange">
-                                                <option disabled selected>Select Location</option>
+                                                <option disabled selected>
+                                                    Select Location
+                                                </option>
                                                 <template v-for="m in munis">
-                                                    <option :value="m.loc_code">{{ m.citymunDesc }}</option>
-
+                                                    <option :value="m.loc_code">
+                                                        {{ m.citymunDesc }}
+                                                    </option>
                                                 </template>
                                             </select>
                                             <!--  -->
 
-
                                             <!-- Vue Search List End-->
                                         </label>
-
                                     </div>
                                 </li>
                                 <li>
@@ -34,7 +35,9 @@
                                             <select class="select select-primary w-full"
                                                 v-model="final_search.dorm_type">
                                                 <template v-for="dt in dorm_type">
-                                                    <option :value="dt.id">{{ dt.des }}</option>
+                                                    <option :value="dt.id">
+                                                        {{ dt.des }}
+                                                    </option>
                                                 </template>
                                                 <option :value="0">ALL</option>
                                             </select>
@@ -43,8 +46,9 @@
                                 </li>
                                 <li>
                                     <div class="form-control mt-4">
-
-                                        <button class="btn btn-primary">Search</button>
+                                        <button class="btn btn-primary">
+                                            Search
+                                        </button>
                                     </div>
                                 </li>
                             </ul>
@@ -52,32 +56,38 @@
                     </div>
                     <!-- card -->
 
-
                     <div class="flex place-content-center bg-base-100" v-if="dormfind.length > 0">
                         <div class="grid grid-cols-1 gap-4 w-5/6">
                             <template v-for="df in dormfind">
                                 <div class="rounded-md w-full shadow-xl">
                                     <div class="card card-side bg-base-100 w-full">
-                                        <figure><img class="object-none h-48 w-96"
-                                                :src="'/storage/dormimg/' + df.filesystem_name" alt="Movie" /></figure>
+                                        <figure>
+                                            <img class="object-none h-48 w-96" :src="'/storage/dormimg/' +
+                            df.filesystem_name
+                            " alt="Movie" />
+                                        </figure>
                                         <div class="card-body">
-                                            <h2 class="card-title">{{ df.name }}</h2>
+                                            <h2 class="card-title">
+                                                {{ df.name }}
+                                            </h2>
                                             <div class="flex justify-start">
                                                 {{ df.dorm_type }}
                                             </div>
                                             <div class="flex justify-start">
                                                 {{ df.address }}
                                             </div>
-                                            <div class="text-wrap p-4"
-                                                style="text-align: justify;text-justify: inter-word;"
-                                                v-html="df.contact">
-                                            </div>
+                                            <div class="text-wrap p-4" style="
+                                                    text-align: justify;
+                                                    text-justify: inter-word;
+                                                " v-html="df.contact"></div>
                                             <div class="card-actions justify-end">
-                                                <button class="btn btn-primary" @click="showTab(df.id)">More</button>
+                                                <button class="btn btn-primary" @click="showTab(df.id)">
+                                                    More
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
-                                    <div :id="df.id" class="w-full" style="display: none;">
+                                    <div :id="df.id" class="w-full" style="display: none">
                                         <div role="tablist" class="tabs tabs-bordered">
                                             <a role="tab" :id="`info_tab${df.id}`" class="tab tab-active">Info</a>
                                             <!-- <a role="tab" :id="`photo_tab${df.id}`" class="tab"
@@ -85,39 +95,64 @@
                                             <!-- <a role="tab" :id="`rev_tab${df.id}`" class="tab">Reviews</a> -->
                                         </div>
                                         <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
-
-                                            <div class="text-wrap p-4"
-                                                style="text-align: justify;text-justify: inter-word;"
-                                                v-html="df.description">
-                                            </div>
+                                            <div class="text-wrap p-4" style="
+                                                    text-align: justify;
+                                                    text-justify: inter-word;
+                                                " v-html="df.description"></div>
                                         </div>
                                         <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
-
                                             <div class="text-wrap p-4">
                                                 <template v-if="df.availability == 1">
-                                                    <button class="btn btn-neutral" @click="reserveModal(df.id)">Reserve
-                                                        Now</button>
+                                                    <button class="btn btn-neutral" @click="
+                            reserveModal(df.id)
+                            ">
+                                                        Reserve Now
+                                                    </button>
                                                 </template>
                                                 <template v-else>
-                                                    <button class="btn btn-error">Not
-                                                        Available for reservation</button>
+                                                    <button class="btn btn-error">
+                                                        Not Available for
+                                                        reservation
+                                                    </button>
                                                 </template>
-
                                             </div>
                                         </div>
+                                        <!--amenities  -->
+
+                                        <div class="flex w-full">
+                                            <!--  -->
+                                            <div class="container mx-auto px-4">
+                                                <h2 class="card-title">Amenities</h2>
+                                                <div class="grid grid-cols-3 gap-4 mt-10">
+                                                    <template v-for="a in df.amenities">
+                                                        <div role="alert" class="alert shadow-lg"> <vue-feather
+                                                                :type="a.icon" size="20"> </vue-feather>
+                                                            <span> {{ a.description }}</span>
+
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </div>
+                                            <!--  -->
+                                        </div>
+                                        <!-- amenities -->
                                         <div class="flex w-full" :id="`photocon${df.id}`">
                                             <!--  -->
                                             <div class="container mx-auto px-4">
                                                 <div class="grid grid-cols-3 gap-4 mt-10">
                                                     <template v-for="p in df.photos">
-                                                        <div class="bg-cover"
-                                                            @click="viewImg(p.id, p.filesystem_name, df.name)"
-                                                            v-bind:style="{
-                            'background-image': 'url(/storage/dormimg/'
-                                + p.filesystem_name + ')'
-                        }">
-                                                        </div>
-
+                                                        <div class="bg-cover" @click="
+                            viewImg(
+                                p.id,
+                                p.filesystem_name,
+                                df.name
+                            )
+                            " v-bind:style="{
+                            'background-image':
+                                'url(/storage/dormimg/' +
+                                p.filesystem_name +
+                                ')',
+                        }"></div>
                                                     </template>
                                                 </div>
                                             </div>
@@ -146,16 +181,16 @@
                     <div class="carousel w-50">
                         <template v-for="fi in feature_img">
                             <div :id="`item${fi.id}`" class="carousel-item w-full">
-                                <img :src="`/storage/dormimg/${fi.filesystem_name}`" style="width: 100%;height: 450px;"
+                                <img :src="`/storage/dormimg/${fi.filesystem_name}`" style="width: 100%; height: 450px"
                                     height="600" />
                             </div>
                         </template>
-
-
                     </div>
                     <div class="flex justify-center w-full py-2 gap-2">
                         <template v-for="(fib, ind) in feature_img">
-                            <a :href="`#item${fib.id}`" class="btn btn-xs">{{ ++ind }}</a>
+                            <a :href="`#item${fib.id}`" class="btn btn-xs">{{
+                            ++ind
+                        }}</a>
                         </template>
                     </div>
                     <!--  -->
@@ -182,9 +217,7 @@
                 </div>
                 <!-- modal view img -->
             </div>
-
         </div>
-
     </div>
 </template>
 
@@ -199,7 +232,6 @@ export default {
         return {
             reserve: {
                 dorm_id: "",
-
             },
             sterm: "",
 
@@ -219,7 +251,7 @@ export default {
             currentTab: 1,
             dormfind: [],
             feature_img: [],
-            statcode: 0
+            statcode: 0,
         };
     },
     mounted() {
@@ -255,13 +287,12 @@ export default {
     // },
     methods: {
         viewImg(id, systemfile, dorm) {
-
-
             document.getElementById("view_pimg_status").checked = true;
-            document.getElementById("dormimgp").src = `/storage/dormimg/${systemfile}`;
+            document.getElementById(
+                "dormimgp"
+            ).src = `/storage/dormimg/${systemfile}`;
             this.dormname = dorm;
             systemfile;
-
         },
         searchSubmit(event) {
             event.preventDefault();
@@ -269,17 +300,13 @@ export default {
 
             axios
                 .post("/accommodationSearchQuery", {
-                    datas: this.final_search
-
+                    datas: this.final_search,
                 })
                 .then((response) => {
                     //this.hasError = false;
                     if (response.data.statcode == 1) {
-
                         this.dormfind = response.data.result;
                         this.statcode = 0;
-
-
                     } else {
                         this.statcode = 1;
                         this.dormfind = [];
@@ -289,8 +316,6 @@ export default {
                     this.errors = [];
 
                     console.log(error.response);
-
-
                 });
         },
         selectChange() {
@@ -391,7 +416,6 @@ export default {
             }
         },
         suggestClick(a, index) {
-
             this.errors = [];
             //alert(a);
             this.sterm = a;
@@ -411,10 +435,9 @@ export default {
         },
 
         showTab(id) {
-
             var state = document.getElementById(id).style.display;
 
-            if (state == 'inline-block') {
+            if (state == "inline-block") {
                 document.getElementById(id).style.display = "none";
             } else {
                 document.getElementById(id).style.display = "inline-block";
@@ -425,29 +448,23 @@ export default {
         getFeatured() {
             // `/form/common-refprovince?page=${this.tbl.page}`
 
-            axios.get(`/pub/dorm-featured`)
-                .then(({ data }) => {
-                    this.feature_img = data;
-
-                });
+            axios.get(`/pub/dorm-featured`).then(({ data }) => {
+                this.feature_img = data;
+            });
         },
         getMuni() {
             // `/form/common-refprovince?page=${this.tbl.page}`
 
-            axios.get(`/pub/muni-get`)
-                .then(({ data }) => {
-                    this.munis = data;
-
-                });
+            axios.get(`/pub/muni-get`).then(({ data }) => {
+                this.munis = data;
+            });
         },
         getDormType() {
             // `/form/common-refprovince?page=${this.tbl.page}`
 
-            axios.get(`/pub/dorm-type-get`)
-                .then(({ data }) => {
-                    this.dorm_type = data;
-
-                });
+            axios.get(`/pub/dorm-type-get`).then(({ data }) => {
+                this.dorm_type = data;
+            });
         },
 
         formatPrice(value) {
@@ -459,7 +476,7 @@ export default {
     components: {
         PubFooter,
         PhotoGallery,
-        ReserveModal
+        ReserveModal,
     },
     computed: {},
 };
