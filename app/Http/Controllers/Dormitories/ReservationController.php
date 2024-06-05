@@ -35,7 +35,7 @@ class ReservationController extends Controller
                 ])
                 ->offset($start_from)
                 ->limit($per_page_record)
-                ->get();
+                ->orderBy('created_at', 'DESC')->get();
 
             $pagLink = [];
 
@@ -109,7 +109,7 @@ class ReservationController extends Controller
                     ->select([
                         'reservations.*',
                         'dorm_branch.name as dormitory',
-                    ])
+                    ])->orderBy('created_at', 'DESC')
                     ->get();
 
                 $total_records =  $s->count();

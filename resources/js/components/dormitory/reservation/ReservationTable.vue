@@ -45,13 +45,13 @@
                         <thead>
                             <tr>
                                 <th>#</th>
-                                <th>Dorm</th>
-                                <th>Name</th>
+                                <th>Dorm Branch</th>
+                                <th>Client</th>
                                 <th>Email</th>
                                 <th>Contact</th>
                                 <th>Status</th>
-                                <th>Created</th>
-                                <th>Updated</th>
+                                <th>Reserved</th>
+                                <th>Approved</th>
                                 <th></th>
                             </tr>
                         </thead>
@@ -79,7 +79,7 @@
                                     <td style="width: 10%">
                                         <div class="join">
                                             <button class="btn btn-info btn-sm join-item" name="confirm"
-                                                @click="iniUpdate(s.id)">
+                                                @click="iniUpdate(s.id)" :disabled="s.status == 2">
                                                 <vue-feather type="edit" size="15"></vue-feather>
                                             </button>
                                             <button class="btn btn-error btn-sm join-item" @click="deletescholar(s.id)">
@@ -183,7 +183,7 @@ export default {
         },
         iniUpdate(id) {
             Swal.fire({
-                title: "Youre about to confirm resevation?",
+                title: "Youre about to confirm reservation?",
                 text: "You won't be able to revert this!",
                 icon: "warning",
                 showCancelButton: true,

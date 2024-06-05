@@ -44,7 +44,7 @@
                     <table class="table table-compact w-full" id="item-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th>#</th>
                                 <th>Name</th>
                                 <th>Description</th>
                                 <th>Contact</th>
@@ -57,15 +57,15 @@
                         <tbody>
                             <template v-for="(s, index) in users">
                                 <tr>
-                                    <td>{{ s.id }}</td>
-                                    <td>{{ s.name }}</td>
+                                    <td>{{ ++index }}</td>
+                                    <td>{{ s.name }} - <strong>{{ (s.type == 1 ? 'Main' : 'Branch') }}</strong></td>
                                     <td>
                                         <div v-html="s.description"></div>
                                     </td>
                                     <td>
                                         <div v-html="s.contact"></div>
                                     </td>
-                                    <td>{{ (s.type == 1 ? 'Main' : 'Branch') }}</td>
+                                    <td>{{ s.dorm_type }}</td>
 
                                     <td>
                                         <template v-if="s.availability == 1">

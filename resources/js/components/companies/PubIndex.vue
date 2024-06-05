@@ -178,21 +178,23 @@
                     </div>
                     <!-- card -->
                     <!--  -->
-                    <div class="carousel w-50">
-                        <template v-for="fi in feature_img">
-                            <div :id="`item${fi.id}`" class="carousel-item w-full">
-                                <img :src="`/storage/dormimg/${fi.filesystem_name}`" style="width: 100%; height: 450px"
-                                    height="600" />
-                            </div>
-                        </template>
-                    </div>
-                    <div class="flex justify-center w-full py-2 gap-2">
-                        <template v-for="(fib, ind) in feature_img">
-                            <a :href="`#item${fib.id}`" class="btn btn-xs">{{
+                    <template v-if="dormfind.length == 0">
+                        <div class="carousel w-50">
+                            <template v-for="fi in feature_img">
+                                <div :id="`item${fi.id}`" class="carousel-item w-full">
+                                    <img :src="`/storage/dormimg/${fi.filesystem_name}`"
+                                        style="width: 100%; height: 450px" height="600" />
+                                </div>
+                            </template>
+                        </div>
+                        <div class="flex justify-center w-full py-2 gap-2">
+                            <template v-for="(fib, ind) in feature_img">
+                                <a :href="`#item${fib.id}`" class="btn btn-xs">{{
                             ++ind
                         }}</a>
-                        </template>
-                    </div>
+                            </template>
+                        </div>
+                    </template>
                     <!--  -->
                 </div>
                 <ReserveModal :reserve="reserve"></ReserveModal>

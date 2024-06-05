@@ -40,7 +40,12 @@ class DormBranchController extends Controller
         $all_records = DormBranch::where('user_id', $user_id)->count();
 
         if (empty($request->search)) {
-            $s = DormBranch::where('user_id', $user_id)->offset($start_from)
+            $s = DormBranch::join('dorm_types', 'dorm_types.id', 'dorm_branch.dorm_type')->where('user_id', $user_id)
+                ->select([
+                    'dorm_branch.*',
+                    'dorm_types.des as dorm_type',
+                ])
+                ->offset($start_from)
                 ->limit($per_page_record)
                 ->get();
 
@@ -106,10 +111,15 @@ class DormBranchController extends Controller
             $s = [];
             $total_records =  0;
             if (count($t) > 0) {
-                $s = DormBranch::where('user_id', $user_id)->where('description', 'LIKE', "%{$search}%")
-                    ->orWhere('name', 'LIKE', "%{$search}%")
+                $s = DormBranch::join('dorm_types', 'dorm_types.id', 'dorm_branch.dorm_type')->where('user_id', $user_id)->where('dorm_branch.description', 'LIKE', "%{$search}%")
+                    ->orWhere('dorm_branch.name', 'LIKE', "%{$search}%")
+                    ->orWhere('dorm_types.des', 'LIKE', "%{$search}%")
                     ->offset($start_from)
                     ->limit($per_page_record)
+                    ->select([
+                        'dorm_branch.*',
+                        'dorm_types.des as dorm_type',
+                    ])
                     ->get();
 
                 $total_records =  $s->count();
