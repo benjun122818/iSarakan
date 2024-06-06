@@ -67,19 +67,38 @@
                             " alt="Movie" />
                                         </figure>
                                         <div class="card-body">
+
                                             <h2 class="card-title">
                                                 {{ df.name }}
                                             </h2>
+
                                             <div class="flex justify-start">
-                                                {{ df.dorm_type }}
+                                                <strong>{{ df.dorm_type }}</strong>
                                             </div>
+
                                             <div class="flex justify-start">
                                                 {{ df.address }}
                                             </div>
                                             <div class="text-wrap p-4" style="
                                                     text-align: justify;
                                                     text-justify: inter-word;
-                                                " v-html="df.contact"></div>
+                                                " v-html="df.contact">
+                                            </div>
+                                            <template v-if="df.roomrates.length > 0">
+                                                <h2 class="card-title">
+                                                    Rates
+                                                </h2>
+                                                <div class="stats shadow">
+                                                    <template v-for="rr in df.roomrates">
+                                                        <div class="stat">
+
+                                                            <div class="stat-title">{{ rr.name }}</div>
+                                                            <div class="stat-value">₱ {{ formatPrice(rr.rate) }}</div>
+
+                                                        </div>
+                                                    </template>
+                                                </div>
+                                            </template>
                                             <div class="card-actions justify-end">
                                                 <button class="btn btn-primary" @click="showTab(df.id)">
                                                     More

@@ -64,6 +64,11 @@ Route::get('dorm/branches/user-table', 'App\Http\Controllers\Dormitories\DormBra
 Route::post('form/dorm-amenities-create', 'App\Http\Controllers\Dormitories\DormBranchController@add_amenities');
 Route::get('form/dorm-amenities-get/{id}', 'App\Http\Controllers\Dormitories\DormBranchController@get_amenities');
 Route::post('form/dorm-amenities-remove', 'App\Http\Controllers\Dormitories\DormBranchController@remove_amenities');
+
+Route::post('form/dorm-roomrate-create', 'App\Http\Controllers\Dormitories\RoomRateController@add_room_rate');
+Route::get('form/dorm-roomrate-get/{id}', 'App\Http\Controllers\Dormitories\RoomRateController@get_room_rates');
+Route::post('form/dorm-roomrate-remove', 'App\Http\Controllers\Dormitories\RoomRateController@soft_remove_rr');
+
 Route::post('/form/dorm-for-approval', 'App\Http\Controllers\Dormitories\DormBranchController@forapprove_dorm_branch');
 Route::post('dorm/photo/set-primary', 'App\Http\Controllers\Dormitories\DormBranchController@photo_set_primary');
 Route::post('dorm/update-available', 'App\Http\Controllers\Dormitories\DormBranchController@update_available');

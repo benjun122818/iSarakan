@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\DormBranch;
 use App\Models\DormImg;
 use App\Models\Amenities;
+use App\Models\RoomRate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -71,10 +72,19 @@ class SubController extends Controller
 
             $img = DormImg::where('dorm_branch_id', $i->id)->get();
             $amenities = Amenities::where('dorm_branch_id', $i->id)->get();
+            $roomrates = RoomRate::join('prices', 'prices.id', 'dorm_rooms_rate.price_id')
+                ->where('dorm_branch_id', $i->id)
+                ->where('active', 1)
+                ->select([
+                    'dorm_rooms_rate.*',
+                    'prices.price as rate'
+                ])
+                ->get();
 
 
             $obj['photos'] = $img;
             $obj['amenities'] = $amenities;
+            $obj['roomrates'] = $roomrates;
 
             $data[] = $obj;
         }

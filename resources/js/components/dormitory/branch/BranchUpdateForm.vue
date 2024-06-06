@@ -178,9 +178,9 @@
                         <div class="divider"></div>
                         <!-- upload dorm img -->
                         <div class="collapse">
-                            <input type="checkbox" id="check_upload_dorm_panel" checked />
+                            <input type="checkbox" id="check_amenities_dorm_panel" checked />
                             <div class="collapse-title text-xl font-medium bg-primary text-primary-content"
-                                @click="checkUpDormPanel()">
+                                @click="checkamenitiesPanel()">
                                 <h2 class="card-title">
                                     Set Amenities
                                 </h2>
@@ -192,6 +192,23 @@
                             </div>
                         </div>
                         <!-- amenities -->
+                        <!-- RoomRates -->
+                        <div class="divider"></div>
+
+                        <div class="collapse">
+                            <input type="checkbox" id="checkRoomRates_dorm_panel" checked />
+                            <div class="collapse-title text-xl font-medium bg-primary text-primary-content"
+                                @click="checkRoomRatesPanel()">
+                                <h2 class="card-title">
+                                    Set Room / Rates
+                                </h2>
+                            </div>
+                            <div class="collapse-content">
+                                <RoomRates></RoomRates>
+                            </div>
+                        </div>
+                        <!-- RoomRates -->
+
                     </div>
                 </div>
 
@@ -206,6 +223,7 @@ import { useToast } from "vue-toastification";
 import UploadForm from "./forms/FileUploadForm.vue";
 import DormImgUpload from "./forms/DormImgUpload.vue";
 import Amenities from "./forms/Amenities.vue";
+import RoomRates from "./forms/RoomRates.vue";
 export default {
     data() {
         return {
@@ -512,6 +530,30 @@ export default {
             console.log(chk);
         },
 
+        checkRoomRatesPanel() {
+            var phase = false,
+                chk = document.getElementById("checkRoomRates_dorm_panel").checked;
+            if (chk == true) {
+                phase = false;
+            } else {
+                phase = true;
+            }
+            document.getElementById("checkRoomRates_dorm_panel").checked = phase;
+
+            console.log(chk);
+        },
+        checkamenitiesPanel() {
+            var phase = false,
+                chk = document.getElementById("check_amenities_dorm_panel").checked;
+            if (chk == true) {
+                phase = false;
+            } else {
+                phase = true;
+            }
+            document.getElementById("check_amenities_dorm_panel").checked = phase;
+
+            console.log(chk);
+        },
         checkUpDormPanel() {
             var phase = false,
                 chk = document.getElementById("check_upload_dorm_panel").checked;
@@ -657,7 +699,8 @@ export default {
     components: {
         UploadForm,
         DormImgUpload,
-        Amenities
+        Amenities,
+        RoomRates
     },
     computed: {},
 };
