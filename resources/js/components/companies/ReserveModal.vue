@@ -44,6 +44,18 @@
                                     <input type="text" placeholder="Type here"
                                         class="input input-sm input-bordered w-full" v-model="reserva.contact" />
                                 </div>
+                                <!-- selsect taes -->
+                                <div class="form-control w-full col-span-2" @click="verifyGencode">
+                                    <label class="label">
+                                        <span class="label-text">Preferred Room / Rates</span>
+                                    </label>
+                                    <select class="select select-bordered w-full max-w-xs" v-model="reserva.rate_id">
+                                        <template v-for="a in reserve.rates">
+                                            <option :value="a.id">{{ a.name }}-({{ formatNum(a.rate) }})</option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <!-- rates -->
                                 <div class="form-control w-full col-span-2">
                                     <div class="label">
                                         <div role="alert" class="alert alert-info" v-if="created_vercode == 1">
@@ -138,6 +150,7 @@ export default {
                 name: null,
                 email: '',
                 contact: null,
+                rate_id: null,
                 verification: null
             },
 
@@ -182,6 +195,7 @@ export default {
                     email: this.reserva.email,
                     name: this.reserva.name,
                     contact: this.reserva.contact,
+                    rate: this.reserva.rate_id,
                     vcode: this.reserva.verification,
                 })
                 .then((response) => {
@@ -224,6 +238,9 @@ export default {
                     this.errors = [];
 
                     console.log(error.response);
+                    if (error.response.data.errors.rate) {
+                        this.errors.push(error.response.data.errors.rate[0]);
+                    }
                     if (error.response.data.errors.email) {
                         this.errors.push(error.response.data.errors.email[0]);
                     }

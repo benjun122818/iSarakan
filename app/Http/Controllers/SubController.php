@@ -9,6 +9,8 @@ use App\Models\DormBranch;
 use App\Models\DormImg;
 use App\Models\Amenities;
 use App\Models\RoomRate;
+use App\Models\Reservation;
+use App\Models\RervationRoomRate;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
@@ -72,7 +74,10 @@ class SubController extends Controller
 
             $img = DormImg::where('dorm_branch_id', $i->id)->get();
             $amenities = Amenities::where('dorm_branch_id', $i->id)->get();
-            $roomrates = RoomRate::join('prices', 'prices.id', 'dorm_rooms_rate.price_id')
+
+            $roomrates = [];
+
+            $rates = RoomRate::join('prices', 'prices.id', 'dorm_rooms_rate.price_id')
                 ->where('dorm_branch_id', $i->id)
                 ->where('active', 1)
                 ->select([
@@ -80,6 +85,44 @@ class SubController extends Controller
                     'prices.price as rate'
                 ])
                 ->get();
+
+            //$r = Reservation::where('dorm_branch_id', $i->id)->where('archive', 0)->get();
+
+            foreach ($rates as $rr) {
+
+                $total_res = 0;
+                $total_avialable = 0;
+                //$r = Reservation::where('dorm_branch_id', $rr->dorm_branch_id)->where('archive', 0)->get();
+                $rrr = RervationRoomRate::leftJoin('reservations', 'reservations.id', 'reservations_room_rate.reservation_id')
+                    ->where('reservations_room_rate.room_rate_id', $rr->id)
+                    ->where('reservations.archive', 0)
+                    ->where('reservations.status', 2)
+                    // ->select('room_rate_id', DB::raw('count(*) as total'))
+                    // ->groupBy('room_rate_id')
+                    ->get();
+
+                $total_res = $rrr->count();
+
+                $total_avialable = $rr->quantity - $total_res;
+
+                if ($total_avialable > 0) {
+
+                    $c = [
+                        'id' => $rr->id,
+                        'name' => $rr->name,
+                        'rate' => $rr->rate,
+                        'quantity' => $rr->quantity,
+                        'persons' => $rr->persons,
+                        'total_res' => $total_res,
+                        'total_avialable' => $total_avialable,
+                    ];
+
+                    // foreach ($r as $reser) {
+                    //    $rrr= RervationRoomRate::where('reservation_id')
+                    // }
+                    $roomrates[] = $c;
+                }
+            }
 
 
             $obj['photos'] = $img;

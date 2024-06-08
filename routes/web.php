@@ -75,6 +75,7 @@ Route::post('dorm/update-available', 'App\Http\Controllers\Dormitories\DormBranc
 
 Route::get('dorm/reservations/data-table', 'App\Http\Controllers\Dormitories\ReservationController@dorm_reser_tbl');
 Route::post('dorm/reservations/confirm', 'App\Http\Controllers\Dormitories\ReservationController@confirm_dorm_reservation');
+Route::post('dorm/reservations/archive', 'App\Http\Controllers\Dormitories\ReservationController@reservation_archive');
 //dorm user
 
 //Route::post('payment/enrollment/charge/online', 'App\Http\Controllers\Enrollment\PaymentController@onlinePaymentCharge');

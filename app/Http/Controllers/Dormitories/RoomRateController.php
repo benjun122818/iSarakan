@@ -20,6 +20,7 @@ class RoomRateController extends Controller
                 'name' => ['required', 'string', 'max:255'],
                 'des' => ['required', 'max:300'],
                 'rate' => ['required'],
+                'persons' => ['required'],
                 'qty' => ['required']
             ],
             [
@@ -42,6 +43,7 @@ class RoomRateController extends Controller
             $a->dorm_branch_id   = $request->dorm_branch_id;
             $a->name   = $request->name;
             $a->quantity  = $request->qty;
+            $a->persons  = $request->persons;
 
             $check_p = Price::where('price',  $request->rate)->first();
 

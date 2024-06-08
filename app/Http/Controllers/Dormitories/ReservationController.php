@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Dormitories;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use App\Models\RoomRate;
+use App\Models\RervationRoomRate;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Mail;
@@ -25,13 +27,20 @@ class ReservationController extends Controller
         // return $page;
         $start_from = ($page - 1) * $per_page_record;
 
-        $all_records = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')->where('dorm_branch.user_id', $user_id)->count();
+        $all_records = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')->where('dorm_branch.user_id', $user_id)->where('reservations.archive', 0)->count();
 
         if (empty($request->search)) {
-            $s = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')->where('dorm_branch.user_id', $user_id)
+            $s = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')
+                ->leftJoin('reservations_room_rate', 'reservations_room_rate.reservation_id', 'reservations.id')
+                ->leftJoin('dorm_rooms_rate', 'dorm_rooms_rate.id', 'reservations_room_rate.room_rate_id')
+                ->leftJoin('prices', 'prices.id', 'dorm_rooms_rate.price_id')
+                ->where('dorm_branch.user_id', $user_id)
+                ->where('reservations.archive', 0)
                 ->select([
                     'reservations.*',
                     'dorm_branch.name as dormitory',
+                    //'dorm_rooms_rate.name as room_rate',
+                    \DB::raw("CONCAT(dorm_rooms_rate.name, ' (',prices.price,')') as room_rate")
                 ])
                 ->offset($start_from)
                 ->limit($per_page_record)
@@ -99,7 +108,13 @@ class ReservationController extends Controller
             $s = [];
             $total_records =  0;
             if (count($t) > 0) {
-                $s = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')->where('dorm_branch.user_id', $user_id)->where('dorm_branch.description', 'LIKE', "%{$search}%")
+                $s = Reservation::join('dorm_branch', 'dorm_branch.id', 'reservations.dorm_branch_id')->where('dorm_branch.user_id', $user_id)
+                    ->leftJoin('reservations_room_rate', 'reservations_room_rate.reservation_id', 'reservations.id')
+                    ->leftJoin('dorm_rooms_rate', 'dorm_rooms_rate.id', 'reservations_room_rate.room_rate_id')
+                    ->leftJoin('prices', 'prices.id', 'dorm_rooms_rate.price_id')
+                    ->where('dorm_branch.user_id', $user_id)
+                    ->where('reservations.archive', 0)
+                    ->where('dorm_branch.description', 'LIKE', "%{$search}%")
                     ->orWhere('dorm_branch.name', 'LIKE', "%{$search}%")
                     ->orWhere('reservations.name', 'LIKE', "%{$search}%")
                     ->orWhere('reservations.email', 'LIKE', "%{$search}%")
@@ -109,6 +124,7 @@ class ReservationController extends Controller
                     ->select([
                         'reservations.*',
                         'dorm_branch.name as dormitory',
+                        \DB::raw("CONCAT(dorm_rooms_rate.name, ' (',prices.price,')') as room_rate")
                     ])->orderBy('created_at', 'DESC')
                     ->get();
 
@@ -181,12 +197,40 @@ class ReservationController extends Controller
         //return $request->all();
 
         $id = $request->reservation_id;
-        $inireser = Reservation::find($id);
-
+        $inireser = Reservation::join('reservations_room_rate', 'reservations_room_rate.reservation_id', 'reservations.id')
+            ->leftJoin('dorm_rooms_rate', 'dorm_rooms_rate.id', 'reservations_room_rate.room_rate_id')
+            ->where('reservations.id', $id)
+            ->select([
+                'reservations.*',
+                'reservations_room_rate.room_rate_id',
+                'dorm_rooms_rate.quantity as room_rate_qty'
+            ])->first();
+        //find($id);
+        // return  $inireser;
 
         $email = $inireser->email;
         $data = array('name' => $inireser->name, 'ver_code' => $email);
 
+        //
+        $total_res = 0;
+        $total_avialable = 0;
+        //$r = Reservation::where('dorm_branch_id', $rr->dorm_branch_id)->where('archive', 0)->get();
+        $rrr = RervationRoomRate::leftJoin('reservations', 'reservations.id', 'reservations_room_rate.reservation_id')
+            ->where('reservations_room_rate.room_rate_id', $inireser->room_rate_id)
+            ->where('reservations.archive', 0)
+            ->where('reservations.status', 2)
+            // ->select('room_rate_id', DB::raw('count(*) as total'))
+            // ->groupBy('room_rate_id')
+            ->get();
+
+        $total_res = $rrr->count();
+
+        $total_avialable = $inireser->room_rate_qty - $total_res;
+
+        if ($total_avialable <= 0) {
+            return response()->json(["status" => 0, "message" => "Something went wrong (No Available Unit)."]);
+        }
+        // 
 
         $send = Mail::send('mails.confirmreservation', $data, function ($message) use ($email) {
             $message->to($email, 'Reservation')->subject('MMSU iSARAKAN Verification code');
@@ -196,6 +240,7 @@ class ReservationController extends Controller
         if ($send) {
             return response()->json(["status" => 0, "message" => "Something went wrong try again later."]);
         }
+        $inireser->aprroved = date("Y-m-d");
         $inireser->status = 2;
 
         $inireser->save();
@@ -213,5 +258,31 @@ class ReservationController extends Controller
         // $check_b->save();
 
         return response()->json(["status" => "success", "statcode" => 1, "message" => "Reservation Approved!"]);
+    }
+
+    public function reservation_archive(Request $request)
+    {
+        //return $request->all();
+
+        DB::beginTransaction();
+        try {
+
+            $a = Reservation::find($request->id);
+
+            $a->archive = 1;
+            $a->save();
+
+            DB::commit();
+        } //try
+        catch (\Exception $e) {
+            DB::rollBack();
+            throw new \Exception($e->getMessage());
+            return $e->getMessage();
+        }
+
+        return response()->json(["status" => "success", "statcode" => 1, "message" => 'Data Archived!']);
+        // return $request->all();
+
+        //return  $name;
     }
 }

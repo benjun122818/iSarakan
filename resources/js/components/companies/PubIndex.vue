@@ -85,16 +85,16 @@
                                                 " v-html="df.contact">
                                             </div>
                                             <template v-if="df.roomrates.length > 0">
-                                                <h2 class="card-title">
-                                                    Rates
-                                                </h2>
+
                                                 <div class="stats shadow">
                                                     <template v-for="rr in df.roomrates">
                                                         <div class="stat">
-
-                                                            <div class="stat-title">{{ rr.name }}</div>
+                                                            <div class="stat-title">
+                                                                {{ rr.name }}
+                                                            </div>
                                                             <div class="stat-value">₱ {{ formatPrice(rr.rate) }}</div>
-
+                                                            <div class="stat-desc">{{ rr.total_avialable }} Unit
+                                                                avialable, Good for {{ rr.persons }}</div>
                                                         </div>
                                                     </template>
                                                 </div>
@@ -123,7 +123,7 @@
                                             <div class="text-wrap p-4">
                                                 <template v-if="df.availability == 1">
                                                     <button class="btn btn-neutral" @click="
-                            reserveModal(df.id)
+                            reserveModal(df.id, df.roomrates)
                             ">
                                                         Reserve Now
                                                     </button>
@@ -253,6 +253,7 @@ export default {
         return {
             reserve: {
                 dorm_id: "",
+                rates: []
             },
             sterm: "",
 
@@ -450,8 +451,9 @@ export default {
         },
         //end
 
-        reserveModal(id) {
+        reserveModal(id, rates) {
             this.reserve.dorm_id = id;
+            this.reserve.rates = rates;
             reserve_modal.showModal();
         },
 

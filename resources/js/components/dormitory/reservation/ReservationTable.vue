@@ -46,6 +46,7 @@
                             <tr>
                                 <th>#</th>
                                 <th>Dorm Branch</th>
+                                <th>Room/Rate</th>
                                 <th>Client</th>
                                 <th>Email</th>
                                 <th>Contact</th>
@@ -60,6 +61,7 @@
                                 <tr>
                                     <td>{{ ++index }}</td>
                                     <td>{{ s.dormitory }}</td>
+                                    <td>{{ s.room_rate }}</td>
                                     <td>{{ s.name }}</td>
                                     <td>
                                         {{ s.email }}
@@ -69,20 +71,16 @@
                                     </td>
                                     <td>{{ (s.status == 0 ? 'Email not verified' : s.status == 1 ? 'Verified' :
                                         'reservation Approved') }}</td>
-                                    <td>{{ formatDate(s.created_at) }}</td>
+                                    <td> {{ formatDate(s.created_at) }}</td>
 
-                                    <td>
-                                        {{
-                                        formatDate(s.updated_at)
-                                    }}
-                                    </td>
+                                    <td>{{ (s.aprroved == null ? '' : formatDate(s.aprroved)) }} </td>
                                     <td style="width: 10%">
                                         <div class="join">
                                             <button class="btn btn-info btn-sm join-item" name="confirm"
                                                 @click="iniUpdate(s.id)" :disabled="s.status == 2">
                                                 <vue-feather type="edit" size="15"></vue-feather>
                                             </button>
-                                            <button class="btn btn-error btn-sm join-item" @click="deletescholar(s.id)">
+                                            <button class="btn btn-error btn-sm join-item" @click="iniArchive(s.id)">
                                                 <vue-feather type="trash-2" size="15"></vue-feather>
                                             </button>
                                         </div>
@@ -196,6 +194,21 @@ export default {
                 }
             });
         },
+        iniArchive(id) {
+            Swal.fire({
+                title: "Youre about to archive record?",
+                text: "You won't be able to revert this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                confirmButtonText: "Yes, confirm it!",
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    this.archiveR(id);
+                }
+            });
+        },
         confirmReservation(id) {
             //event.preventDefault();
 
@@ -207,20 +220,13 @@ export default {
                 .then((response) => {
                     //this.hasError = false;
                     if (response.data.statcode == 1) {
-                        this.toast.success(response.data.message, {
-                            position: "top-right",
-                            timeout: 2000,
-                            closeOnClick: true,
-                            pauseOnFocusLoss: true,
-                            pauseOnHover: true,
-                            draggable: true,
-                            draggablePercent: 0.6,
-                            showCloseButtonOnHover: false,
-                            closeButton: "button",
-                            icon: true,
-                            rtl: false,
+
+                        Swal.fire({
+                            title: "Great!",
+                            text: response.data.message,
+                            icon: "success",
                         });
-                        this.errors = [];
+                        //this.errors = [];
                         this.getReservations();
                     }
                     else {
@@ -232,20 +238,49 @@ export default {
                     }
                 })
                 .catch((error) => {
-                    this.errors = [];
+                    // this.errors = [];
 
-                    if (error.response.data.errors.name) {
-                        this.errors.push(error.response.data.errors.name[0]);
-                    }
-                    if (error.response.data.errors.description) {
-                        this.errors.push(
-                            error.response.data.errors.description[0]
-                        );
-                    }
+                    // if (error.response.data.errors.name) {
+                    //     this.errors.push(error.response.data.errors.name[0]);
+                    // }
+                    // if (error.response.data.errors.description) {
+                    //     this.errors.push(
+                    //         error.response.data.errors.description[0]
+                    //     );
+                    // }
 
-                    if (error.response.data.errors.contact) {
-                        this.errors.push(error.response.data.errors.contact[0]);
+                    // if (error.response.data.errors.contact) {
+                    //     this.errors.push(error.response.data.errors.contact[0]);
+                    // }
+
+
+                });
+        },
+        archiveR(id) {
+            axios
+                .post("/dorm/reservations/archive", {
+                    id: id,
+                })
+                .then((response) => {
+                    //this.hasError = false;
+                    if (response.data.statcode == 1) {
+
+                        Swal.fire({
+                            title: "Succes!",
+                            text: response.data.message,
+                            icon: "success",
+                        });
+                        this.getReservations();
+                    } else {
+                        Swal.fire({
+                            title: "Oops!",
+                            text: response.data.message,
+                            icon: "error",
+                        });
                     }
+                })
+                .catch((error) => {
+                    //  this.errors = [];
 
 
                 });

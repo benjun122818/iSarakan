@@ -14,14 +14,14 @@
         </div>
         <form @submit="addRoomRate" id="form_add_dorm">
             <!--info-->
-            <div class="grid gap-4 grid-cols-2">
-                <div class="form-control w-full col-span-2">
+            <div class="grid gap-4 grid-cols-3">
+                <div class="form-control w-full col-span-3">
                     <label class="label">
                         <span class="label-text">Name</span>
                     </label>
                     <input type="text" placeholder="Type here" class="input input-bordered w-full" v-model="rr.name" />
                 </div>
-                <div class="form-control w-full col-span-2">
+                <div class="form-control w-full col-span-3">
                     <label class="label">
                         <span class="label-text">Description</span>
                     </label>
@@ -40,6 +40,13 @@
                     </label>
                     <input type="number" placeholder="Type here" min="1" class="input input-bordered w-full"
                         v-model="rr.qty" />
+                </div>
+                <div class="form-control w-full">
+                    <label class="label">
+                        <span class="label-text">Persons</span>
+                    </label>
+                    <input type="number" placeholder="Type here" min="1" class="input input-bordered w-full"
+                        v-model="rr.persons" />
                 </div>
             </div>
 
@@ -78,6 +85,7 @@
                         <th>Description</th>
                         <th>Rate</th>
                         <th>Quantity</th>
+                        <th>Persons</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -89,6 +97,7 @@
                             <td>{{ s.des }}</td>
                             <td>{{ formatNum(s.rate) }}</td>
                             <td>{{ s.quantity }}</td>
+                            <td>{{ s.persons }}</td>
                             <td>
                                 <button class="btn btn-sm" @click="removeRR(s.id)"><vue-feather type="x-circle"
                                         size="20">
@@ -118,6 +127,7 @@ export default {
                 des: "",
                 rate: 0,
                 qty: 0,
+                persons: 0
             },
 
             formstate: null,
@@ -152,6 +162,7 @@ export default {
                     des: this.rr.des,
                     rate: this.rr.rate,
                     qty: this.rr.qty,
+                    persons: this.rr.persons,
                 })
                 .then((response) => {
                     //this.hasError = false;

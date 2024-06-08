@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Reservation;
+use App\Models\RervationRoomRate;
 use DB;
 use Mail;
 
@@ -21,16 +22,18 @@ class MailController extends Controller
 
     public function ini_reserve(Request $request)
     {
-        //  return $request->all();
+        //return $request->all();
         $request->validate(
             [
                 'name' => ['required', 'string', 'max:255'],
                 'email' => ['required', 'string', 'email', 'max:255'],
                 'contact' => ['required'],
+                'rate' => ['required'],
                 'vcode' => ['required']
             ],
             [
-                'vcode.required' => 'The verifiation code is required.'
+                'vcode.required' => 'The verifiation code is required.',
+                'rate.required' => 'Rate / Room field is required.'
             ]
         );
 
@@ -55,6 +58,11 @@ class MailController extends Controller
                             $check_b->contact = $request->contact;
                             $check_b->status = 1;
 
+                            $rrr = new RervationRoomRate();
+                            $rrr->reservation_id = $check_r->id;
+                            $rrr->room_rate_id = $request->rate;
+
+                            $rrr->save();
                             $check_b->save();
                             DB::commit();
                             return response()->json(["status" => 1, "message" => "Your Reservation has been save. An email will be sent if your reservtion has been accepted"]);

@@ -2889,13 +2889,6 @@ select {
   padding-top: 1rem;
   padding-bottom: 1rem;
 }
-.stat-figure {
-  grid-column-start: 2;
-  grid-row: span 3 / span 3;
-  grid-row-start: 1;
-  place-self: center;
-  justify-self: end;
-}
 .stat-title {
   grid-column-start: 1;
   white-space: nowrap;
@@ -4728,9 +4721,6 @@ details.collapse summary::-webkit-details-marker {
 .modal-middle {
   place-items: center;
 }
-.stats-vertical {
-  grid-auto-flow: row;
-}
 .tabs-md :where(.tab) {
   height: 2rem;
   font-size: 0.875rem;
@@ -4966,17 +4956,6 @@ details.collapse summary::-webkit-details-marker {
   border-top-right-radius: var(--rounded-box, 1rem);
   border-bottom-right-radius: 0px;
   border-bottom-left-radius: 0px;
-}
-.stats-vertical > :not([hidden]) ~ :not([hidden]) {
-  --tw-divide-x-reverse: 0;
-  border-right-width: calc(0px * var(--tw-divide-x-reverse));
-  border-left-width: calc(0px * calc(1 - var(--tw-divide-x-reverse)));
-  --tw-divide-y-reverse: 0;
-  border-top-width: calc(1px * calc(1 - var(--tw-divide-y-reverse)));
-  border-bottom-width: calc(1px * var(--tw-divide-y-reverse));
-}
-.stats-vertical {
-  overflow-y: auto;
 }
 .table-xs :not(thead):not(tfoot) tr {
   font-size: 0.75rem;
@@ -5807,10 +5786,6 @@ details.collapse summary::-webkit-details-marker {
 .text-primary-content {
   --tw-text-opacity: 1;
   color: var(--fallback-pc,oklch(var(--pc)/var(--tw-text-opacity)));
-}
-.text-secondary {
-  --tw-text-opacity: 1;
-  color: var(--fallback-s,oklch(var(--s)/var(--tw-text-opacity)));
 }
 .text-opacity-50 {
   --tw-text-opacity: 0.5;
