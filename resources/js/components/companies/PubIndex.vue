@@ -121,7 +121,7 @@
                                         </div>
                                         <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
                                             <div class="text-wrap p-4">
-                                                <template v-if="df.availability == 1 && df.roomrates.length > 0">
+                                                <template v-if="df.availability == 1 && df.roomratestmp > 0">
                                                     <button class=" btn btn-neutral" @click="
                             reserveModal(df.id, df.roomrates)
                             ">

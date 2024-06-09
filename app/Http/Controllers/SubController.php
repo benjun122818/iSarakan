@@ -76,6 +76,7 @@ class SubController extends Controller
             $amenities = Amenities::where('dorm_branch_id', $i->id)->get();
 
             $roomrates = [];
+            $roomratestmp = [];
 
             $rates = RoomRate::join('prices', 'prices.id', 'dorm_rooms_rate.price_id')
                 ->where('dorm_branch_id', $i->id)
@@ -105,22 +106,31 @@ class SubController extends Controller
 
                 $total_avialable = $rr->quantity - $total_res;
 
+                $c = [
+                    'id' => $rr->id,
+                    'name' => $rr->name,
+                    'rate' => $rr->rate,
+                    'quantity' => $rr->quantity,
+                    'persons' => $rr->persons,
+                    'total_res' => $total_res,
+                    'total_avialable' => $total_avialable,
+                ];
+
+                // foreach ($r as $reser) {
+                //    $rrr= RervationRoomRate::where('reservation_id')
+                // }
+                $roomrates[] = $c;
+
                 if ($total_avialable > 0) {
 
-                    $c = [
+                    $l = [
                         'id' => $rr->id,
-                        'name' => $rr->name,
-                        'rate' => $rr->rate,
-                        'quantity' => $rr->quantity,
-                        'persons' => $rr->persons,
-                        'total_res' => $total_res,
-                        'total_avialable' => $total_avialable,
                     ];
 
                     // foreach ($r as $reser) {
                     //    $rrr= RervationRoomRate::where('reservation_id')
                     // }
-                    $roomrates[] = $c;
+                    $roomratestmp[] = $l;
                 }
             }
 
@@ -128,6 +138,8 @@ class SubController extends Controller
             $obj['photos'] = $img;
             $obj['amenities'] = $amenities;
             $obj['roomrates'] = $roomrates;
+
+            $obj['roomratestmp'] = count($roomratestmp);
 
             $data[] = $obj;
         }
