@@ -53,11 +53,12 @@ class SubController extends Controller
             ->where('dorm_img.prima', 1)
             ->select([
                 'dorm_branch.*',
+                'dorm_branch.dorm_type as dorm_type_id',
                 'dorm_types.des AS dorm_type',
                 'dorm_img.filesystem_name'
             ])
             ->get();
-
+        //return $q;
         $data = [];
 
         foreach ($q as $i) {
@@ -68,6 +69,7 @@ class SubController extends Controller
                 'dorm_type' => $i->dorm_type,
                 'address' => $i->address,
                 'contact' => $i->contact,
+                'dorm_type_id' => $i->dorm_type_id,
                 'filesystem_name' => $i->filesystem_name,
                 'availability' => $i->availability
             ];
@@ -106,20 +108,6 @@ class SubController extends Controller
 
                 $total_avialable = $rr->quantity - $total_res;
 
-                $c = [
-                    'id' => $rr->id,
-                    'name' => $rr->name,
-                    'rate' => $rr->rate,
-                    'quantity' => $rr->quantity,
-                    'persons' => $rr->persons,
-                    'total_res' => $total_res,
-                    'total_avialable' => $total_avialable,
-                ];
-
-                // foreach ($r as $reser) {
-                //    $rrr= RervationRoomRate::where('reservation_id')
-                // }
-                $roomrates[] = $c;
 
                 if ($total_avialable > 0) {
 
@@ -131,6 +119,23 @@ class SubController extends Controller
                     //    $rrr= RervationRoomRate::where('reservation_id')
                     // }
                     $roomratestmp[] = $l;
+
+
+                    $c = [
+                        'id' => $rr->id,
+                        'name' => $rr->name,
+                        'des' => $rr->des,
+                        'rate' => $rr->rate,
+                        'quantity' => $rr->quantity,
+                        'persons' => $rr->persons,
+                        'total_res' => $total_res,
+                        'total_avialable' => $total_avialable,
+                    ];
+
+                    // foreach ($r as $reser) {
+                    //    $rrr= RervationRoomRate::where('reservation_id')
+                    // }
+                    $roomrates[] = $c;
                 }
             }
 

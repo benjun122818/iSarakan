@@ -1,6 +1,9 @@
 <template>
     <div class="overflow-hidden overflow-x-auto min-w-full align-middle sm:rounded-md">
         <div class="flex w-full">
+            <!--  -->
+            <!-- <label for="my_modal_6" class="btn">open modal</label> -->
+            <!--  -->
             <div class="card w-full bg-base-100 shadow-xl">
                 <div class="card-body text-center">
                     <div class="flex justify-center">
@@ -67,38 +70,26 @@
                             " alt="Movie" />
                                         </figure>
                                         <div class="card-body">
-
                                             <h2 class="card-title">
                                                 {{ df.name }}
                                             </h2>
 
                                             <div class="flex justify-start">
-                                                <strong>{{ df.dorm_type }}</strong>
+                                                <strong>{{
+                            df.dorm_type
+                        }}</strong>
                                             </div>
 
                                             <div class="flex justify-start">
                                                 {{ df.address }}
                                             </div>
-                                            <div class="text-wrap p-4" style="
+                                            <!-- contact -->
+                                            <div class="text-wrap" style="
                                                     text-align: justify;
                                                     text-justify: inter-word;
-                                                " v-html="df.contact">
-                                            </div>
-                                            <template v-if="df.roomrates.length > 0">
+                                                " v-html="df.description"></div>
+                                            <!-- contact -->
 
-                                                <div class="stats shadow">
-                                                    <template v-for="rr in df.roomrates">
-                                                        <div class="stat">
-                                                            <div class="stat-title">
-                                                                {{ rr.name }}
-                                                            </div>
-                                                            <div class="stat-value">₱ {{ formatPrice(rr.rate) }}</div>
-                                                            <div class="stat-desc">{{ rr.total_avialable }} Unit
-                                                                avialable, Good for {{ rr.persons }}</div>
-                                                        </div>
-                                                    </template>
-                                                </div>
-                                            </template>
                                             <div class="card-actions justify-end">
                                                 <button class="btn btn-primary" @click="showTab(df.id)">
                                                     More
@@ -113,17 +104,72 @@
                                                 @click="clickTabs(df.id, 2)">Photos</a> -->
                                             <!-- <a role="tab" :id="`rev_tab${df.id}`" class="tab">Reviews</a> -->
                                         </div>
+                                        <!-- info tab -->
                                         <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
-                                            <div class="text-wrap p-4" style="
+                                            <!-- contact -->
+                                            <div class="text-wrap pl-10 pt-6" style="
                                                     text-align: justify;
                                                     text-justify: inter-word;
-                                                " v-html="df.description"></div>
+                                                " v-html="df.contact"></div>
+                                            <!-- contact -->
+
                                         </div>
+                                        <template v-if="df.roomrates.length > 0">
+                                            <div class="overflow-x-auto p-4">
+                                                <table class="table">
+                                                    <!-- head -->
+                                                    <thead>
+                                                        <tr>
+                                                            <th></th>
+                                                            <th>Room</th>
+                                                            <th>Rate</th>
+                                                            <th> {{ df.dorm_type_id == 1 ? "Bed space available" :
+                            "Room available" }}</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <template v-for="(rr, b) in df.roomrates">
+                                                            <tr>
+                                                                <th></th>
+                                                                <td> <strong>{{ rr.name }}</strong><br>
+                                                                    <small>{{ rr.des }}</small>
+                                                                </td>
+                                                                <td><strong>₱ {{ formatPrice(rr.rate) }}</strong></td>
+                                                                <td> {{ rr.total_avialable }}
+                                                                    {{ df.dorm_type_id ==
+                            1
+                            ? "Bed space available"
+                            : "Room available"
+                                                                    }} {{ df.dorm_type_id ==
+                            1
+                            ? ""
+                            : ", Good for"
+                                                                    }}
+
+                                                                    {{ df.dorm_type_id ==
+                            1
+                            ? ""
+                            : rr.persons
+                                                                    }}</td>
+                                                            </tr>
+                                                        </template>
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </template>
+                                        <!--info tab  -->
                                         <div class="flex" :id="`descon${df.id}`" v-if="currentTab == 1">
                                             <div class="text-wrap p-4">
-                                                <template v-if="df.availability == 1 && df.roomratestmp > 0">
-                                                    <button class=" btn btn-neutral" @click="
-                            reserveModal(df.id, df.roomrates)
+                                                <template v-if="df.availability == 1 &&
+                            df.roomrates.length > 0
+                            ">
+                                                    <button class="btn btn-neutral" @click="
+                            reserveModal(
+                                df.id,
+                                df.roomrates
+                            )
                             ">
                                                         Reserve Now
                                                     </button>
@@ -141,13 +187,18 @@
                                         <div class="flex w-full">
                                             <!--  -->
                                             <div class="container mx-auto px-4">
-                                                <h2 class="card-title">Amenities</h2>
+                                                <h2 class="card-title">
+                                                    Amenities
+                                                </h2>
                                                 <div class="grid grid-cols-3 gap-4 mt-10">
                                                     <template v-for="a in df.amenities">
-                                                        <div role="alert" class="alert shadow-lg"> <vue-feather
-                                                                :type="a.icon" size="20"> </vue-feather>
-                                                            <span> {{ a.description }}</span>
-
+                                                        <div role="alert" class="alert shadow-lg">
+                                                            <vue-feather :type="a.icon" size="20">
+                                                            </vue-feather>
+                                                            <span>
+                                                                {{
+                            a.description
+                        }}</span>
                                                         </div>
                                                     </template>
                                                 </div>
@@ -208,15 +259,14 @@
                         </div>
                         <div class="flex justify-center w-full py-2 gap-2">
                             <template v-for="(fib, ind) in feature_img">
-                                <a :href="`#item${fib.id}`" class="btn btn-xs">{{
-                            ++ind
-                        }}</a>
+                                <a :href="`#item${fib.id}`" class="btn btn-xs">{{ ++ind }}</a>
                             </template>
                         </div>
                     </template>
                     <!--  -->
                 </div>
                 <ReserveModal :reserve="reserve"></ReserveModal>
+                <reserveMod2 :reserve="reserve"></reserveMod2>
                 <!-- footer -->
                 <PubFooter></PubFooter>
                 <!-- footer -->
@@ -248,12 +298,13 @@ import Swal from "sweetalert2/dist/sweetalert2.js";
 import PhotoGallery from "./PhotoGallery.vue";
 import PubFooter from "./PubFooter.vue";
 import ReserveModal from "./ReserveModal.vue";
+import reserveMod2 from "./reserveMod2.vue";
 export default {
     data() {
         return {
             reserve: {
                 dorm_id: "",
-                rates: []
+                rates: [],
             },
             sterm: "",
 
@@ -454,7 +505,8 @@ export default {
         reserveModal(id, rates) {
             this.reserve.dorm_id = id;
             this.reserve.rates = rates;
-            reserve_modal.showModal();
+            document.getElementById("my_modal_6").checked = true;
+            //reserve_modal.showModal();
         },
 
         showTab(id) {
@@ -500,6 +552,7 @@ export default {
         PubFooter,
         PhotoGallery,
         ReserveModal,
+        reserveMod2
     },
     computed: {},
 };

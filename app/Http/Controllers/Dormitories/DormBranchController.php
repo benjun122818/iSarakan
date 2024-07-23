@@ -47,6 +47,7 @@ class DormBranchController extends Controller
                 ])
                 ->offset($start_from)
                 ->limit($per_page_record)
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             $pagLink = [];
@@ -110,32 +111,60 @@ class DormBranchController extends Controller
             //return $t;
             $s = [];
             $total_records =  0;
-            if (count($t) > 0) {
-                $s = DormBranch::join('dorm_types', 'dorm_types.id', 'dorm_branch.dorm_type')->where('user_id', $user_id)->where('dorm_branch.description', 'LIKE', "%{$search}%")
-                    ->orWhere('dorm_branch.name', 'LIKE', "%{$search}%")
-                    ->orWhere('dorm_types.des', 'LIKE', "%{$search}%")
-                    ->offset($start_from)
-                    ->limit($per_page_record)
-                    ->select([
-                        'dorm_branch.*',
-                        'dorm_types.des as dorm_type',
-                    ])
-                    ->get();
 
-                $total_records =  $s->count();
+            $final_ids = [];
 
-                $pagLink = [];
-                $showing = $total_records;
+            $tmp = DormBranch::join('dorm_types', 'dorm_types.id', 'dorm_branch.dorm_type')->orwhere('dorm_branch.description', 'LIKE', "%{$search}%")
+                ->orWhere('dorm_branch.name', 'LIKE', "%{$search}%")
+                ->orWhere('dorm_types.des', 'LIKE', "%{$search}%")
+                ->offset($start_from)
+                ->limit($per_page_record)
+                ->select([
+                    'dorm_branch.*',
+                    'dorm_types.des as dorm_type',
+                ])->orderBy('created_at', 'desc')
+                ->get();
+            //sdfdsf
+            foreach ($tmp as $g) {
+                if ($user_id == $g->user_id) {
+                    $final_ids[] = $g->id;
+                }
+            }
 
-                $total_pages = ceil($total_records / $per_page_record);
 
-                $ends_count = 1;  //how many items at the ends (before and after [...])
-                $middle_count = 3;  //how many items before and after current page
-                $dots = false;
+            //    if (count($t) > 0) {
+            $s = DormBranch::whereIn('dorm_branch.id', $final_ids)->join('dorm_types', 'dorm_types.id', 'dorm_branch.dorm_type')
+                ->select([
+                    'dorm_branch.*',
+                    'dorm_types.des as dorm_type',
+                ])->orderBy('created_at', 'desc')
+                ->get();
 
-                for ($i = 1; $i <= $total_pages; $i++) {
-                    if ($i == $page) {
+            $total_records =  $s->count();
 
+            $pagLink = [];
+            $showing = $total_records;
+
+            $total_pages = ceil($total_records / $per_page_record);
+
+            $ends_count = 1;  //how many items at the ends (before and after [...])
+            $middle_count = 3;  //how many items before and after current page
+            $dots = false;
+
+            for ($i = 1; $i <= $total_pages; $i++) {
+                if ($i == $page) {
+
+                    $p = [
+                        'status' => ($i == $page ? 1 : 0),
+                        'page' => $i,
+                        'text' => $i,
+
+                    ];
+
+                    array_push($pagLink, $p);
+                    $dots = true;
+                } else {
+                    if ($i <= $ends_count || ($page && $i >= $page - $middle_count && $i <= $page + $middle_count) || $i > $total_pages - $ends_count) {
                         $p = [
                             'status' => ($i == $page ? 1 : 0),
                             'page' => $i,
@@ -145,39 +174,28 @@ class DormBranchController extends Controller
 
                         array_push($pagLink, $p);
                         $dots = true;
-                    } else {
-                        if ($i <= $ends_count || ($page && $i >= $page - $middle_count && $i <= $page + $middle_count) || $i > $total_pages - $ends_count) {
-                            $p = [
-                                'status' => ($i == $page ? 1 : 0),
-                                'page' => $i,
-                                'text' => $i,
+                    } elseif ($dots) {
+                        $p = [
+                            'status' => ($i == $page ? 1 : 0),
+                            'page' => $i,
+                            'text' => '...',
 
-                            ];
+                        ];
 
-                            array_push($pagLink, $p);
-                            $dots = true;
-                        } elseif ($dots) {
-                            $p = [
-                                'status' => ($i == $page ? 1 : 0),
-                                'page' => $i,
-                                'text' => '...',
-
-                            ];
-
-                            array_push($pagLink, $p);
-                            $dots = false;
-                        }
+                        array_push($pagLink, $p);
+                        $dots = false;
                     }
                 }
-                return response()->json([
-                    'records'   => $s,
-                    'pagLink' => $pagLink,
-                    'current_page' => $page,
-                    'all_records' => $all_records,
-                    'total_records' =>  $showing,
-                    'total_pages' => $total_pages
-                ], 200);
             }
+            return response()->json([
+                'records'   => $s,
+                'pagLink' => $pagLink,
+                'current_page' => $page,
+                'all_records' => $all_records,
+                'total_records' =>  $showing,
+                'total_pages' => $total_pages
+            ], 200);
+            // }
         }
 
         // return  $total_pages;

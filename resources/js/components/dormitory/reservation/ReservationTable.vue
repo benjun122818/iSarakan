@@ -1,5 +1,6 @@
 <template>
     <div class="p-0 w-full">
+
         <div class="card w-full bg-base-100 shadow-xl">
             <div class="card-body">
                 <div class="grid grid-cols-2 gap-4">
@@ -47,6 +48,7 @@
                                 <th>#</th>
                                 <th>Dorm Branch</th>
                                 <th>Room/Rate</th>
+                                <th>From-to</th>
                                 <th>Client</th>
                                 <th>Email</th>
                                 <th>Contact</th>
@@ -62,6 +64,11 @@
                                     <td>{{ ++index }}</td>
                                     <td>{{ s.dormitory }}</td>
                                     <td>{{ s.room_rate }}</td>
+                                    <td>
+                                        <template v-if="s.datefrom != null">
+                                            {{ formatDate(s.datefrom) }} - {{ formatDate(s.dateto) }}
+                                        </template>
+                                    </td>
                                     <td>{{ s.name }}</td>
                                     <td>
                                         {{ s.email }}
@@ -152,6 +159,7 @@ export default {
     },
     mounted() {
         this.getReservations();
+        this.automaticArchive();
     },
     methods: {
         getReservations(p) {
@@ -177,6 +185,13 @@ export default {
                     this.tbl.all_records = data.all_records;
                     this.tbl.total_records = data.total_records;
                     this.tbl.total_pages = data.total_pages;
+                });
+        },
+        automaticArchive() {
+
+            axios.get("/dorm/archive/reservations")
+                .then(({ data }) => {
+
                 });
         },
         iniUpdate(id) {
@@ -292,7 +307,7 @@ export default {
                 month = objectDate.getMonth() + 1,
                 year = objectDate.getFullYear();
             // let dformat = year + "-" + month + "-" + day;
-            let dformat = month + "-" + day + "-" + year;
+            let dformat = month + "/" + day + "/" + year;
 
             return dformat;
         },

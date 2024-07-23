@@ -1,7 +1,8 @@
 <template>
     <div>
-        <dialog id="reserve_modal" class="modal">
-            <div class="modal-box w-11/12 max-w-5xl">
+        <input type="checkbox" id="my_modal_6" class="modal-toggle" />
+        <div class="modal" role="dialog">
+            <div class="modal-box w-full">
                 <h3 class="font-bold text-lg">Reservation Information!</h3>
                 <div class="card bg-base-100" style="display: inline;" id="initial_form">
                     <div v-if="errors.length > 0">
@@ -47,16 +48,6 @@
                                 <!-- selsect taes -->
                                 <div class="form-control w-full col-span-2" @click="verifyGencode">
                                     <label class="label">
-                                        <span class="label-text">Select Dates</span>
-                                    </label>
-                                    <Datepicker autoApply :closeOnAutoApply="true" range multi-calendars
-                                        v-model="reserva.dates" />
-                                </div>
-                                <!-- rates -->
-                                <!-- select date -->
-
-                                <div class="form-control w-full col-span-2" @click="verifyGencode">
-                                    <label class="label">
                                         <span class="label-text">Preferred Room / Rates</span>
                                     </label>
                                     <select class="select select-bordered w-full max-w-xs" v-model="reserva.rate_id">
@@ -68,6 +59,15 @@
                                             </option>
                                         </template>
                                     </select>
+                                </div>
+                                <!-- rates -->
+                                <!-- select date -->
+                                <div class="form-control w-full col-span-2" @click="verifyGencode">
+                                    <label class="label">
+                                        <span class="label-text">Select Dates</span>
+                                    </label>
+                                    <Datepicker autoApply :closeOnAutoApply="true" range multi-calendars
+                                        v-model="reserva.dates" />
                                 </div>
 
                                 <!-- select date -->
@@ -145,13 +145,12 @@
                     </form>
                 </div>
                 <!--  -->
+
+                <div class="modal-action">
+                    <label for="my_modal_6" class="btn">Close!</label>
+                </div>
             </div>
-            <form method="dialog" class="modal-backdrop">
-                <button>close</button>
-            </form>
-        </dialog>
-
-
+        </div>
     </div>
 </template>
 
@@ -214,6 +213,7 @@ export default {
                     name: this.reserva.name,
                     contact: this.reserva.contact,
                     rate: this.reserva.rate_id,
+                    dates: this.reserva.dates,
                     vcode: this.reserva.verification,
                 })
                 .then((response) => {
@@ -233,7 +233,16 @@ export default {
                             rtl: false,
                         });
                         this.errors = [];
-                        reserve_modal.close();
+                        //reserve_modal.close();
+                        document.getElementById("my_modal_6").checked = false;
+
+                        this.reserve.name = null;
+                        this.reserve.email = '';
+                        this.reserve.contact = null;
+                        this.reserve.rate_id = null;
+                        this.reserve.dates = [];
+                        this.reserve.verification = null;
+
                     } else {
                         this.toast.error(response.data.message, {
                             position: "top-right",

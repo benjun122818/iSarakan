@@ -39,12 +39,27 @@ class MailController extends Controller
 
         $dorm_id = $request->dorm_id;
         $email = $request->email;
+
+        if ($request->dates) {
+            $dfrom = date_create($request->dates[0])->format("Y/m/d H:i:s");
+            $dto = date_create($request->dates[1])->format("Y/m/d H:i:s");
+        } else {
+            $dfrom = null;
+            $dto = null;
+        }
+
+        // return $request->dates;
+        // $dfrom = $request->dates[0];
+        // $dto = $request->dates[1];
+
         $vcode = $request->vcode;
+
+        //return  $dfrom;
 
         DB::beginTransaction();
         try {
 
-            $check_r = Reservation::where('dorm_branch_id', $dorm_id)->where('email', $email)->first();
+            $check_r = Reservation::where('dorm_branch_id', $dorm_id)->where('email', $email)->where('archive', 0)->first();
             // return  $check_r;
 
             if (!empty($check_r)) {
@@ -56,6 +71,8 @@ class MailController extends Controller
                             $check_b = Reservation::find($check_r->id);
                             $check_b->name = $request->name;
                             $check_b->contact = $request->contact;
+                            $check_b->datefrom = $dfrom;
+                            $check_b->dateto = $dto;
                             $check_b->status = 1;
 
                             $rrr = new RervationRoomRate();
@@ -65,7 +82,7 @@ class MailController extends Controller
                             $rrr->save();
                             $check_b->save();
                             DB::commit();
-                            return response()->json(["status" => 1, "message" => "Your Reservation has been save. An email will be sent if your reservtion has been accepted"]);
+                            return response()->json(["status" => 1, "message" => "Your Reservation has been save. An email will be sent if your reservation has been accepted"]);
                             break;
                         case 1:
                             //code block;
@@ -114,7 +131,11 @@ class MailController extends Controller
 
             $ver_code = random_int(100000, 999999);
 
-            $check_r = Reservation::where('dorm_branch_id', $dorm_id)->where('email', $email)->first();
+            $check_r = Reservation::where('reservations.dorm_branch_id', $dorm_id)
+                ->where('reservations.email', $email)
+                ->where('reservations.archive', 0)
+                //->where('reservations_room_rate.room_rate_id', 0)
+                ->first();
             //  return  $check_r;
 
             if (empty($check_r)) {

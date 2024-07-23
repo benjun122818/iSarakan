@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Reservation;
 use App\Models\RoomRate;
 use App\Models\RervationRoomRate;
+use App\Models\DormBranch;
 use Illuminate\Support\Facades\Auth;
 use DB;
 use Mail;
@@ -284,5 +285,56 @@ class ReservationController extends Controller
         // return $request->all();
 
         //return  $name;
+    }
+    public function automatic_archive()
+    {
+        $user_id = Auth::user()->id;
+
+        $dorm_b_ids =  DormBranch::where('user_id', $user_id)->pluck('id');
+        $res = Reservation::whereIn('dorm_branch_id', $dorm_b_ids)->where('status', 2)->where('archive', 0)->get();
+        //    return $res;
+
+        foreach ($res as $r) {
+            if ($r->datefrom == null) {
+                $date1 = date_create($r->created_at)->format("Y/m/d H:i:s");
+                $date2 = date("Y/m/d H:i:s");
+
+                $ts1 = strtotime($date1);
+                $ts2 = strtotime($date2);
+
+                $year1 = date('Y', $ts1);
+                $year2 = date('Y', $ts2);
+
+                $month1 = date('m', $ts1);
+                $month2 = date('m', $ts2);
+
+                $diff = (($year2 - $year1) * 12) + ($month2 - $month1);
+
+                if ($diff >= 3) {
+                    Reservation::where('id', $r->id)
+                        ->update([
+                            'archive' => 1
+                        ]);
+                }
+            } else {
+                $date1 = date_create($r->dateto)->format("Y/m/d H:i:s");
+                $date2 = date("Y/m/d H:i:s");
+
+                $ts1 = strtotime($date1);
+                $ts2 = strtotime($date2);
+
+                if ($ts2 > $ts1) {
+                    Reservation::where('id', $r->id)
+                        ->update([
+                            'archive' => 1
+                        ]);
+                }
+                // else {
+                //     return 'no';
+                // }
+            }
+        }
+
+        return 'ok';
     }
 }
